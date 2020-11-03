@@ -42,6 +42,7 @@ export default {
             mobileMenuActive: false,
             menu : [
                 {label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/'},
+                {label: 'Movies', icon: 'pi pi-fw pi-video', to: '/movie'},
 				{
 					label: 'UI Kit', icon: 'pi pi-fw pi-sitemap',
 					items: [

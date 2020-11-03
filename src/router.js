@@ -154,6 +154,11 @@ const routes = [
         name: 'documentation',
         component: () => import('./components/Documentation.vue'),
     },
+    {
+        path: '/movie',
+        name: 'movie',
+        component: () => import('./components/movie/Movie.vue')
+    },
 ];
 
 const router = createRouter({
