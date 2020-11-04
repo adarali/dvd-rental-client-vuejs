@@ -1,25 +1,80 @@
 <template>
-  <div>
+    <div>
+        <Toolbar>
+        <template #left>
+            <Button @click="cancel()" class="p-mr-2" label="Back" icon="pi pi-chevron-left"></Button>
+            <Button @click="rent" v-if="isLoggedIn" class="p-mr-2" label="Rent" icon="pi pi-dollar"></Button>
+            <Button @click="purchase" v-if="isLoggedIn" label="Purchase" icon="pi pi-shopping-cart"></Button>
+            <i class="pi pi-bars p-toolbar-separator p-mr-2" v-if="isLoggedIn" />
+            <ToggleButton v-model="liked" :title="liked? 'Unlike' : 'Like'" onIcon="pi pi-thumbs-up" offIcon="pi pi-thumbs-up" @click="likeMovie" v-if="isLoggedIn"/>
+        </template>
+
+        <template #right v-if="isAdmin">
+            <ToggleButton icon="pi pi-check" onLabel="Available" offLabel="Unavailable" title="Edit movie" class="p-mr-2" v-model="movie.available" @change="toggleAvailable"/>
+            <Button icon="pi pi-pencil" class="p-button-success p-mr-2" title="Edit movie" @click="editMovie"/>
+            <Button icon="pi pi-trash" class="p-button-danger" title="Delete movie"/>
+        </template>
+        </Toolbar>
+      
       <h3>{{movie.title}}</h3>
+      <p>{{movie.description}}</p>
+
+      <table>
+          <div>
+              <td style="font-weight: bold; width: 100px;">Rental price:</td>
+              <td>{{movie.rentalPrice}}</td>
+          </div>
+          <div style="margin-top: 5px">
+              <td style="font-weight: bold; width: 100px;">Sale price:</td>
+              <td>{{movie.salePrice}}</td>
+          </div>
+      </table>
+      <div>
+          
+      </div>
+
+      <div>
+        <Carousel :value="movie.movieImages" :numVisible="numVisible">
+            <template #item="slotProps">
+                <a :href="slotProps.data.url" target="_blank"><img :src="slotProps.data.url" alt="" width="100" height="100"></a>
+            </template>
+        </Carousel>
+      </div>
+      
+      <div>
+      </div>
   </div>
+
+  
 </template>
 
 <script>
-import { auth } from '@/services/variables';
-import MovieService from '@/services/MovieService.js'
+import Button from 'primevue/button';
+import ToggleButton from 'primevue/togglebutton';
+import Toolbar from 'primevue/toolbar';
+import Carousel from 'primevue/carousel';
+
+import { inject } from 'vue'
 
 export default {
    name:'MovieDetails',
-    
+    components: {
+        Button,
+        ToggleButton,
+        Toolbar,
+        Carousel,
+    },
     props: {
         movieId: Number,
         
     },
     data() {
         return {
+            auth: inject('auth'),
             movie: {},
-            service: new MovieService(),
-            liked: false
+            service: inject('service'),
+            liked: false,
+            available: true,
         }
     },
     mounted() {
@@ -30,16 +85,19 @@ export default {
     },
     computed: {
         isLoggedIn() {
-            if(auth.user.username) {
-                return true;
+            return this.auth.isLoggedIn;
+        },
+        numVisible() {
+            if(this.movie.movieImages) {
+                return this.movie.movieImages.length;
             }
-            return false;
+            return 0;
+        },
+        isAdmin() {
+            return this.auth.isAdmin;
         }
     },
     methods: {
-        cancel() {
-            this.$emit('cancel-clicked');
-        },
         likeMovie() {
             this.service.likeMovie(this.movie.id).then(data => {
                 this.liked = data;
@@ -50,8 +108,21 @@ export default {
         },
         purchase() {
             this.$emit("purchase-clicked", this.movie)
+        },
+        cancel() {
+            this.$emit('cancelled')    
+        },
+        toggleAvailable() {
+            let available = this.movie.available
+            this.service.toggleAvailable(this.movie.id).then(res => {
+                console.log("available res", res.data);
+                this.movie.available = !res.data.endsWith('unavailable');
+            }).catch(() => this.movie.available != available);
+        },
+        editMovie() {
+            this.$emit('edit-clicked', this.movie);
         }
-    }
+    },
 }
 </script>
 

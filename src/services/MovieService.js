@@ -1,4 +1,3 @@
-import axios from 'axios';
 import BaseService from './BaseService';
 
 
@@ -7,46 +6,53 @@ export default class MovieService extends BaseService {
 
     getMovieList(lazyRequest) {
         let url = this.baseUrl+"/movie/find";
-        return axios.post(url, lazyRequest, {headers: this.headers}).then(res => res.data);
+        return this.axios.post(url, lazyRequest, {headers: this.headers}).then(res => res.data);
     }
 
     getMovieDetails(id) {
         let url = this.baseUrl+"/movie/find/"+id;
-        return axios.get(url, {headers: this.headers}).then(res => res.data);
+        return this.axios.get(url, {headers: this.headers}).then(res => res.data);
     }
 
     saveMovie(movie) {
-        let url = this.baseUrl+"/movie/admin/" + (movie.id ? 'modify' : 'add');
+        let url = this.baseUrl+"/movie/admin/"
         console.log("headers", this.headers)
-        return axios.post(url, movie, {headers: this.headers}).then(res =>{
+
+        let send = movie.id ? this.axios.put : this.axios.post
+
+        return send(url, movie, {headers: this.headers}).then(res =>{
             return res.data;
         });
     }
 
     deleteMovie(id) {
         let url = this.baseUrl+"/movie/admin/"+id;
-        return axios.delete(url, {headers: this.headers}).then(res => res);
+        return this.axios.delete(url, {headers: this.headers}).then(res => res);
     }
 
     likeMovie(id) {
         let url = this.baseUrl+"/movie/like?id="+id;
-        return axios.get(url, {headers: this.headers}).then(res => res.data)
+        return this.axios.get(url, {headers: this.headers}).then(res => res.data)
     }
 
     rentMovie(rent) {
+        console.log("post rent", rent)
         let url = this.baseUrl + "/rent";
-        return axios.post(url, rent, {headers: this.headers})
+        return this.axios.post(url, rent, {headers: this.headers})
     }
 
     purchaseMovie(purchase) {
         let url = this.baseUrl + "/purchase";
-        return axios.post(url, purchase, {headers: this.headers});
+        return this.axios.post(url, purchase, {headers: this.headers});
     }
 
     queryChangeLogs(request) {
         let url = this.baseUrl + "/movie/admin/changelog";
-        return axios.post(url, request, {headers: this.headers}).then(res => res.data)
+        return this.axios.post(url, request, {headers: this.headers}).then(res => res.data)
     }
-    
+
+    toggleAvailable(movieId) {
+        return this.axios.patch(this.baseUrl + "/movie/admin/availability/"+movieId)
+    }
 
 }

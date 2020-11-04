@@ -1,7 +1,7 @@
 <template>
 	<div :class="containerClass" @click="onWrapperClick">
 		<AppTopBar @menu-toggle="onMenuToggle" />
-
+        <Toast/>
         <transition name="layout-sidebar">
             <div :class="sidebarClass" @click="onSidebarClick" v-show="isSidebarVisible()">
                 <div class="layout-logo">
@@ -10,38 +10,48 @@
                     </router-link>
                 </div>
 
-                <AppProfile />
+                
+                    <AppProfile :user="user"/>
+                
                 <AppMenu :model="menu" @menuitem-click="onMenuItemClick" />
             </div>
         </transition>
 
 		<div class="layout-main">
-			<router-view />
+            <router-view />
 		</div>
 
-		<AppConfig :layoutMode="layoutMode" :layoutColorMode="layoutColorMode" @layout-change="onLayoutChange" @layout-color-change="onLayoutColorChange"/>
-
-		<AppFooter />
+		<!-- <AppConfig :layoutMode="layoutMode" :layoutColorMode="layoutColorMode" @layout-change="onLayoutChange" @layout-color-change="onLayoutColorChange"/> -->
+        <AppFooter />
 	</div>
 </template>
+		
 
 <script>
 import AppTopBar from './AppTopbar.vue';
 import AppProfile from './AppProfile.vue';
 import AppMenu from './AppMenu.vue';
-import AppConfig from './AppConfig.vue';
+// import AppConfig from './AppConfig.vue';
 import AppFooter from './AppFooter.vue';
 
+import { provide } from 'vue';
+
+import Auth from './classes/auth';
+
 export default {
+    setup() {
+        provide('auth', new Auth(localStorage.getItem('jwt'), JSON.parse(localStorage.getItem('user'))));
+    },
     data() {
         return {
+            user: {},
             layoutMode: 'static',
             layoutColorMode: 'dark',
             staticMenuInactive: false,
             overlayMenuActive: false,
             mobileMenuActive: false,
             menu : [
-                {label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/'},
+                // {label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/'},
                 {label: 'Movies', icon: 'pi pi-fw pi-video', to: '/movie'},
 				{
 					label: 'UI Kit', icon: 'pi pi-fw pi-sitemap',
@@ -212,7 +222,7 @@ export default {
             else {
                 return true;
             }
-        },
+        }
     },
     computed: {
         containerClass() {
@@ -246,7 +256,7 @@ export default {
         'AppTopBar': AppTopBar,
         'AppProfile': AppProfile,
         'AppMenu': AppMenu,
-        'AppConfig': AppConfig,
+        // 'AppConfig': AppConfig,
         'AppFooter': AppFooter,
     }
 }
