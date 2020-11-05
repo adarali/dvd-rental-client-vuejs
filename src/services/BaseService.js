@@ -2,8 +2,8 @@ import axios from 'axios';
 
 export default class BaseService {
     
-    constructor(jwt = "") {
-        this.jwt = jwt;
+    constructor(auth) {
+        this.auth = auth;
         
         this.createAxios();
         
@@ -14,8 +14,7 @@ export default class BaseService {
     }) {
         this.api = axios.create({
             baseURL: '',
-            timeout: 1000,
-            headers: this.headers
+            timeout: 1000
           });
 
           this.api.interceptors.response.use((response) => response, onError);
@@ -32,12 +31,17 @@ export default class BaseService {
 
     get headers() {
         return {
-            'jwt': this.jwt
+            'jwt': this.auth ? this.auth.jwt : ''
         }
     }
 
     get axios() {
         return this.api;
+    }
+
+    logout() {
+        console.log("logout auth", this.auth);
+        this.axios.headers = {};
     }
     
 }

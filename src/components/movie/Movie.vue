@@ -16,16 +16,13 @@ import MovieDetails from './MovieDetails.vue';
 import MovieRent from './MovieRent.vue';
 import MoviePurchase from './MoviePurchase.vue';
 import MovieForm from './MovieForm.vue';
-import { provide, inject } from 'vue';
 
 import { services } from '@/services/variables'
 
 export default {
     name: 'Movie',
     setup() {
-        let auth = inject('auth')
-        services.movieService = new MovieService(auth.jwt);
-        provide('service', services.movieService);
+        
     },
     components: {
         MovieList,
@@ -36,7 +33,6 @@ export default {
     },
     data() {
         return {
-            service: inject('service'),
             movieId: null,
             movie: {},
             detailsVisible: false,
@@ -44,6 +40,11 @@ export default {
             purchaseVisible: false,
             formVisible: false,
         }
+    },
+    created() {
+        let auth = this.$store.getters.auth;
+        services.movieService = new MovieService(auth);
+        this.$store.getters.services.movieService = services.movieService;
     },
     mounted() {
         let serv = services.movieService;

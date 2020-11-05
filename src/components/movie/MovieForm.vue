@@ -12,15 +12,15 @@
         </div>
         <div class="p-field p-col-12 p-md-4">
             <label for="stock">Stock</label>
-            <InputNumber id="stock" v-model="request.stock" showButton/>
+            <InputNumber id="stock" v-model="request.stock" showButtons/>
         </div>
         <div class="p-field p-col-12 p-md-4">
             <label for="rental-price">Rental price</label>
-            <InputNumber id="rental-price" v-model="request.rentalPrice" showButton/>
+            <InputNumber id="rental-price" v-model="request.rentalPrice" showButtons/>
         </div>
         <div class="p-field p-col-12 p-md-4">
-            <label for="sale-price">Sale price</label>
-            <InputNumber id="sale-price" v-model="request.salePrice" showButton/>
+            <label for="sale-price">Sale price</label>changeTypes
+            <InputNumber id="sale-price" v-model="request.salePrice" showButtons/>
         </div>
         <div class="p-field p-col-12">
             <label for="image-url">Image URL</label>
@@ -50,8 +50,6 @@ import InputNumber from 'primevue/inputnumber';
 import Button from 'primevue/button';
 import Carousel from 'primevue/carousel';
 
-import { inject } from 'vue';
-
 export default {
     components: {
         InputText,
@@ -64,7 +62,6 @@ export default {
     },
     data() {
         return {
-            service: inject('service'),
             imageUrl: '',
             request: {
                 movieId: null,
@@ -100,6 +97,9 @@ export default {
             }
             return 0;
         },
+        service() {
+            return this.$store.getters.services.movieService;
+        }
     },
     methods: {
         save() {

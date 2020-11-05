@@ -16,17 +16,20 @@
         </template>
         </Toolbar>
       
-      <h3>{{movie.title}}</h3>
+        <h3>{{movie.title}}</h3>
+        <table>
+            <td style="width: 100px;"><span style="font-weight: bold; width: 100px;">Rent:</span> ${{movie.rentalPrice.toFixed(2)}}</td>
+            <td><span style="font-weight: bold; width: 100px;">Purchase</span>: ${{movie.salePrice.toFixed(2)}}</td>
+        </table>
+        
       <p>{{movie.description}}</p>
 
       <table>
           <div>
-              <td style="font-weight: bold; width: 100px;">Rental price:</td>
-              <td>{{movie.rentalPrice}}</td>
+              
           </div>
           <div style="margin-top: 5px">
-              <td style="font-weight: bold; width: 100px;">Sale price:</td>
-              <td>{{movie.salePrice}}</td>
+              
           </div>
       </table>
       <div>
@@ -54,8 +57,6 @@ import ToggleButton from 'primevue/togglebutton';
 import Toolbar from 'primevue/toolbar';
 import Carousel from 'primevue/carousel';
 
-import { inject } from 'vue'
-
 export default {
    name:'MovieDetails',
     components: {
@@ -70,9 +71,7 @@ export default {
     },
     data() {
         return {
-            auth: inject('auth'),
-            movie: {},
-            service: inject('service'),
+            movie: {salePrice: 0, rentalPrice: 0,},
             liked: false,
             available: true,
         }
@@ -85,7 +84,7 @@ export default {
     },
     computed: {
         isLoggedIn() {
-            return this.auth.isLoggedIn;
+            return this.$store.getters.isLoggedIn
         },
         numVisible() {
             if(this.movie.movieImages) {
@@ -94,7 +93,10 @@ export default {
             return 0;
         },
         isAdmin() {
-            return this.auth.isAdmin;
+            return this.$store.getters.isAdmin;
+        },
+        service() {
+            return this.$store.getters.services.movieService;
         }
     },
     methods: {

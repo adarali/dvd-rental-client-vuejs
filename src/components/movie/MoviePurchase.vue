@@ -17,8 +17,6 @@
 import InputNumber from 'primevue/inputnumber';
 import Button from 'primevue/button';
 
-import {inject} from 'vue';
-
 export default {
     name: 'MoviePurchase',
     components: {
@@ -30,7 +28,6 @@ export default {
     },
     data() {
         return {
-            service: inject('service'),
             purchase: {
                 movieId: this.movie.id,
                 quantity: 1,
@@ -40,6 +37,9 @@ export default {
     computed: {
         price() {
             return this.purchase.quantity * this.movie.salePrice;
+        },
+        service() {
+            return this.$store.getters.services.movieService;
         }
     },
     methods: {

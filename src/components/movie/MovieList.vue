@@ -40,7 +40,6 @@ import InputText from 'primevue/inputtext';
 import Dropdown from 'primevue/dropdown';
 import Button from 'primevue/button';
 
-import { inject } from 'vue';
 
 export default {
     name: 'MovieList',
@@ -53,9 +52,7 @@ export default {
     },
     data() {
         return {
-            auth: inject('auth'),
             date: new Date(),
-            service: inject('service'),
             movies: [],
             totalRecords: 0,
             selectedMovie: {},
@@ -82,6 +79,12 @@ export default {
     computed: {
         isAdmin() {
             return this.auth.isAdmin;
+        },
+        auth() {
+            return this.$store.getters.auth;
+        },
+        service() {
+            return this.$store.getters.services.movieService;
         }
     },
     methods: {

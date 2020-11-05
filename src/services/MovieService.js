@@ -52,7 +52,8 @@ export default class MovieService extends BaseService {
     }
 
     toggleAvailable(movieId) {
-        return this.axios.patch(this.baseUrl + "/movie/admin/availability/"+movieId)
+        return this.axios.patch(this.baseUrl + "/movie/admin/availability/"+movieId, {}, {headers: this.headers})
     }
+
 
 }

@@ -24,7 +24,7 @@ import Button from 'primevue/button';
 
 import LoginService from '@/services/LoginService';
 
-import { inject } from 'vue';
+// import { inject } from 'vue';
 
 export default {
     components: {
@@ -35,11 +35,15 @@ export default {
     data() {
         return {
             service: new LoginService(),
-            auth: inject('auth'),
             request: {
                 username: '',
                 password: '',
             }
+        }
+    },
+    computed: {
+        auth() {
+            return this.$store.getters.auth;
         }
     },
     methods: {
@@ -47,12 +51,9 @@ export default {
             let auth = this.auth;
             this.service.login(this.request).then(res => {
                 console.log("login res", res.data.user.fullName)
-
-
                 auth.login(res.data.jwt, res.data.user);
 
-                localStorage.setItem('jwt', auth.jwt);
-                localStorage.setItem('user', JSON.stringify(auth.user));
+                this.$store.commit('incrementMenuKey');
 
                 this.cancel();    
             }).catch(error => {

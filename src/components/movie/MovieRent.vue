@@ -26,8 +26,6 @@ import InputNumber from 'primevue/inputnumber';
 import Button from 'primevue/button';
 // import Toast from 'primevue/toast';
 
-import { inject } from 'vue';
-
 export default {
     name: 'MovieRent',
     components: {
@@ -41,7 +39,7 @@ export default {
     },
     data() {
         return {
-            service: inject('service'),
+            
             rent: {
                 movieId: this.movie.id,
                 rentDays: 1,
@@ -52,6 +50,9 @@ export default {
     computed: {
         price() {
             return this.movie.rentalPrice * this.rent.rentDays * this.rent.quantity;
+        },
+        service() {
+            return this.$store.getters.services.movieService;
         }
     },
     methods: {

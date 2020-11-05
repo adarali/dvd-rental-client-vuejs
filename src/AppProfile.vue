@@ -22,8 +22,6 @@
 <script>
 import Button from 'primevue/button';
 
-import { inject } from 'vue';
-
 	export default {
 		components: {
 			Button,
@@ -34,16 +32,15 @@ import { inject } from 'vue';
 		},
 		data() {
 			return {
-				auth: inject('auth'),
 				expanded: false
 			}
 		},
 		computed: {
 			isLoggedIn() {
-				if(this.user.username) {
-					return true;
-				}
-				return false;
+				return this.auth.isLoggedIn;
+			},
+			auth() {
+				return this.$store.getters.auth;
 			}
 		},
 		methods: {
@@ -56,7 +53,7 @@ import { inject } from 'vue';
 				this.$router.push({path: '/login'});
 			},
 			logout() {
-				this.auth.logout();
+				this.$store.commit('logout');
 				this.expanded = false;
 			}
 		},

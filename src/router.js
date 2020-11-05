@@ -15,7 +15,15 @@ const routes = [
         path: '/login',
         name: 'login',
         component: () => import('./components/LoginForm.vue')
+    },
+    {
+        path: '/admin/:view',
+        name: 'view',
+        component: () => import('./components/admin/Admin.vue'),
+        props: true,
     }
+
+
 ];
 
 const router = createRouter({

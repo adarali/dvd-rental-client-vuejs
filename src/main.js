@@ -6,6 +6,7 @@ import Ripple from 'primevue/ripple';
 import Toast from 'primevue/toast';
 import ToastService from 'primevue/toastservice';
 import Tooltip from 'primevue/tooltip';
+import store from './store/index';
 
 import Sidebar from 'primevue/sidebar';
 
@@ -34,6 +35,7 @@ app.config.globalProperties.$primevue = reactive({ ripple: true });
 
 app.use(ToastService);
 app.use(router);
+app.use(store);
 
 app.directive('tooltip', Tooltip);
 app.directive('ripple', Ripple);
@@ -45,3 +47,9 @@ app.component('Sidebar', Sidebar);
 app.component('Toast', Toast);
 
 app.mount('#app');
+
+app.config.globalProperties.$filters = {
+    formatCurrency(value) {
+        return '$'+value.toFixed(2);
+    }
+}
