@@ -3,7 +3,7 @@
     <MovieDetails v-if="detailsVisible" :movieId="movieId" @cancelled="reset" @rent-clicked="onRentClicked" @purchase-clicked="onPurchaseClicked" @edit-clicked="onEditClicked"/>
     <MovieRent v-else-if="rentVisible" :movie="movie" @cancelled="onRentCancelled" @rent-ok="onRentCancelled"/>
     <MoviePurchase v-else-if="purchaseVisible" :movie="movie" @cancelled="onPurchaseCancelled" @purchase-ok="onRentCancelled"/>
-    <MovieForm v-else-if="formVisible" :movie="movie" @save-ok="onSaveOk"/>
+    <MovieForm v-else-if="formVisible" :movie="movie" @save-ok="onSaveOk" @cancelled="onFormCancelled"/>
     <MovieList v-else @movie-selected="onMovieSelected" @add-clicked="onAddClicked"/>
     
 </div>
@@ -49,11 +49,13 @@ export default {
     mounted() {
         let serv = services.movieService;
         serv.createAxios((error) => {
-            console.log(error.response)
             if(error.response.status == 401) {
                 this.$router.push('/login');
             }
-            this.$toast.add({severity:'error', summary: 'Error', detail: error.response.data.error.message, life: 3000});
+            if(error.response.status == 422) {
+                return Promise.reject(error);    
+            }
+            this.$messages.showError(error.response.data.error.message, this);
             return Promise.reject(error);
         });
     },
@@ -100,6 +102,10 @@ export default {
             this.movie = movie;
             this.reset();
             this.formVisible = true;
+        },
+        onFormCancelled(id) {
+            if(!id) this.reset();
+            else this.onRentCancelled();
         }
     }
     

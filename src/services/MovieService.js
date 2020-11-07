@@ -16,10 +16,7 @@ export default class MovieService extends BaseService {
 
     saveMovie(movie) {
         let url = this.baseUrl+"/movie/admin/"
-        console.log("headers", this.headers)
-
         let send = movie.id ? this.axios.put : this.axios.post
-
         return send(url, movie, {headers: this.headers}).then(res =>{
             return res.data;
         });
@@ -36,7 +33,6 @@ export default class MovieService extends BaseService {
     }
 
     rentMovie(rent) {
-        console.log("post rent", rent)
         let url = this.baseUrl + "/rent";
         return this.axios.post(url, rent, {headers: this.headers})
     }

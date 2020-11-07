@@ -48,17 +48,14 @@ export default {
     },
     methods: {
         login() {
+            this.$store.getters.services.loginService = this.service;
             let auth = this.auth;
             this.service.login(this.request).then(res => {
-                console.log("login res", res.data.user.fullName)
                 auth.login(res.data.jwt, res.data.user);
 
                 this.$store.commit('incrementMenuKey');
 
                 this.cancel();    
-            }).catch(error => {
-                console.log(error)
-                // this.$toast.add({severity:'error', summary: 'Login failed', detail:error.response.data.error.message, life: 3000});
             });
         },
         cancel() {

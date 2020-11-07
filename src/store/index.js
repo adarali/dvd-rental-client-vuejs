@@ -1,5 +1,6 @@
 import { createStore } from 'vuex';
 import Auth from '@/classes/auth';
+import BaseService from '../services/BaseService';
 
 const store = new createStore({
     state() {
@@ -27,11 +28,11 @@ const store = new createStore({
             state.menuKey++;
         },
         logout(state) {
+            let service = new BaseService(state.auth);
+            if(service) service.logout();
             state.auth.logout();
-            for(const prop in state.services) {
-                console.log("state.services.prop", prop);
-                state.services[prop].logout();
-            }
+            
+            
             state.menuKey++;
         }
     }

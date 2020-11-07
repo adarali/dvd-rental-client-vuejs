@@ -53,3 +53,13 @@ app.config.globalProperties.$filters = {
         return '$'+value.toFixed(2);
     }
 }
+
+app.config.globalProperties.$messages = {
+    showSuccess(msg, self) {
+        self.$toast.add({severity:'success', summary: 'Success', detail: msg, life: 3000});
+    },
+
+    showError(msg, self) {
+        self.$toast.add({severity:'error', summary: 'Error', detail: msg, life: 3000});
+    }
+}

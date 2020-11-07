@@ -57,8 +57,7 @@ export default {
     },
     methods: {
         doRent() {
-            this.service.rentMovie(this.rent).then(res => {
-                console.log(res);
+            this.service.rentMovie(this.rent).then(() => {
                 this.$toast.add({severity:'success', summary: 'Rent successful', detail:"You've rented this movie successfully", life: 3000});
                 this.$emit('rent-ok');
             })

@@ -4,11 +4,7 @@
         <Toast/>
         <transition name="layout-sidebar">
             <div :class="sidebarClass" @click="onSidebarClick" v-show="isSidebarVisible()">
-                <div class="layout-logo">
-                    <router-link to="/">
-                        <img alt="Logo" :src="logo" />
-                    </router-link>
-                </div>
+                
 
                 
                     <AppProfile :user="user"/>
@@ -150,7 +146,7 @@ export default {
             }];
         },
         logo() {
-            return (this.layoutColorMode === 'dark') ? "assets/layout/images/logo-white.svg" : "assets/layout/images/logo.svg";
+            return (this.layoutColorMode === 'dark') ? "assets/layout/images/video-camera-white.png" : "assets/layout/images/video-camera-white.png";
         },
         isAdmin() {
             return this.auth.isAdmin;

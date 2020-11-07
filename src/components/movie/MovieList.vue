@@ -62,7 +62,7 @@ export default {
                 {name: 'All', code: 2},
             ],
             request: {
-              page: 1,
+              page: 0,
               pageSize: 10,
               sortField: "title",
               sortOrder: 1,
@@ -96,7 +96,6 @@ export default {
             });
         },
         onPage(e) {
-            console.log("e", e.sortField)
             this.request.page = e.first / this.request.pageSize;
             this.request.sortField = e.sortField;
             this.request.sortOrder = e.sortOrder;
@@ -113,9 +112,6 @@ export default {
         onAvailableFilgerCahnged() {
             this.request.page = 0;
             this.loadMovies();
-        },
-        edit(id) {
-            console.log("editing", id)
         },
         showDetails(movie) {
             this.$emit('movie-selected', movie);

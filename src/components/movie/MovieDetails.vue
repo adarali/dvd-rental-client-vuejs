@@ -6,15 +6,26 @@
             <Button @click="rent" v-if="isLoggedIn" class="p-mr-2" label="Rent" icon="pi pi-dollar"></Button>
             <Button @click="purchase" v-if="isLoggedIn" label="Purchase" icon="pi pi-shopping-cart"></Button>
             <i class="pi pi-bars p-toolbar-separator p-mr-2" v-if="isLoggedIn" />
-            <ToggleButton v-model="liked" :title="liked? 'Unlike' : 'Like'" onIcon="pi pi-thumbs-up" offIcon="pi pi-thumbs-up" @click="likeMovie" v-if="isLoggedIn"/>
+            <ToggleButton class="p-mr-2" v-model="liked" :title="liked? 'Unlike' : 'Like'" onIcon="pi pi-thumbs-up" offIcon="pi pi-thumbs-up" :onLabel="likes" :offLabel="likes" @click="likeMovie" v-if="isLoggedIn"/>
+            <span class="pm-ml-2">{{likes == 0 ? 'No' : likes}} {{likes == 1 ? 'like' : 'likes'}}</span>
         </template>
 
         <template #right v-if="isAdmin">
-            <ToggleButton icon="pi pi-check" onLabel="Available" offLabel="Unavailable" title="Edit movie" class="p-mr-2" v-model="movie.available" @change="toggleAvailable"/>
+            <ToggleButton icon="pi pi-check" onLabel="Available" offLabel="Unavailable" :title="movie.available ? 'Make unavailable' : 'Make available'" class="p-mr-2" v-model="movie.available" @change="toggleAvailable"/>
             <Button icon="pi pi-pencil" class="p-button-success p-mr-2" title="Edit movie" @click="editMovie"/>
-            <Button icon="pi pi-trash" class="p-button-danger" title="Delete movie"/>
+            <Button icon="pi pi-trash" class="p-button-danger" title="Delete movie" @click="openConfirmation"/>
         </template>
         </Toolbar>
+        <Dialog header="Confirmation" v-model:visible="displayConfirmation" :style="{width: '350px'}" :modal="true">
+            <div class="confirmation-content">
+                <i class="pi pi-exclamation-triangle p-mr-3" style="font-size: 2rem" />
+                <span>Are you sure you want to delete this movie?</span>
+            </div>
+            <template #footer>
+                <Button label="No" icon="pi pi-times" @click="closeConfirmation" class="p-button-text"/>
+                <Button label="Yes" icon="pi pi-check" @click="deleteMovie" class="p-button-text" autofocus />
+            </template>
+        </Dialog>
       
         <h3>{{movie.title}}</h3>
         <table>
@@ -56,6 +67,7 @@ import Button from 'primevue/button';
 import ToggleButton from 'primevue/togglebutton';
 import Toolbar from 'primevue/toolbar';
 import Carousel from 'primevue/carousel';
+import Dialog from 'primevue/dialog';
 
 export default {
    name:'MovieDetails',
@@ -64,6 +76,7 @@ export default {
         ToggleButton,
         Toolbar,
         Carousel,
+        Dialog,
     },
     props: {
         movieId: Number,
@@ -73,13 +86,17 @@ export default {
         return {
             movie: {salePrice: 0, rentalPrice: 0,},
             liked: false,
+            likes: 0,
             available: true,
+            displayConfirmation: false,
         }
     },
     mounted() {
         this.service.getMovieDetails(this.movieId).then(data => {
             this.movie = data;
             this.liked = data.liked;
+            this.likes = data.likes;
+            console.log("movie", this.movie.likes);
         });
     },
     computed: {
@@ -102,7 +119,8 @@ export default {
     methods: {
         likeMovie() {
             this.service.likeMovie(this.movie.id).then(data => {
-                this.liked = data;
+                this.liked = data.liked;
+                this.likes = data.likes;
             });
         },
         rent() {
@@ -117,17 +135,33 @@ export default {
         toggleAvailable() {
             let available = this.movie.available
             this.service.toggleAvailable(this.movie.id).then(res => {
-                console.log("available res", res.data);
                 this.movie.available = !res.data.endsWith('unavailable');
             }).catch(() => this.movie.available != available);
         },
         editMovie() {
             this.$emit('edit-clicked', this.movie);
-        }
+        },
+        deleteMovie() {
+            this.closeConfirmation();
+            this.service.deleteMovie(this.movie.id).then(() => {
+                this.$messages.showSuccess("The movie was deleted successfully", this);
+                this.cancel();
+            });
+        },
+        openConfirmation() {
+            this.displayConfirmation = true;
+        },
+        closeConfirmation() {
+            this.displayConfirmation = false;
+        },
     },
 }
 </script>
 
 <style>
-
+.confirmation-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 </style>

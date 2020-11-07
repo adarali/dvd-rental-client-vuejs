@@ -4,31 +4,36 @@
     <div class="p-fluid p-form-grid p-grid">
         <div class="p-field p-col-12">
             <label for="title">Title</label>
-            <InputText id="title" v-model="request.title"></InputText>
+            <InputText id="title" v-model="request.title" :class="{'p-invalid': invalid.title}"></InputText>
+            <small id="title-help" class="p-invalid" v-if="invalid.title">{{invalid.title}}</small>
         </div>
         <div class="p-field p-col-12">
             <label for="description">Description</label>
-            <InputText id="description" v-model="request.description"></InputText>
+            <InputText id="description" v-model="request.description" :class="{'p-invalid': invalid.description}"></InputText>
+            <small id="description-help" class="p-invalid" v-if="invalid.description">{{invalid.description}}</small>
         </div>
         <div class="p-field p-col-12 p-md-4">
             <label for="stock">Stock</label>
-            <InputNumber id="stock" v-model="request.stock" showButtons/>
+            <InputNumber id="stock" v-model="request.stock" showButtons :class="{'p-invalid': invalid.stock}"/>
+            <small id="stock-help" class="p-invalid" v-if="invalid.stock">{{invalid.stock}}</small>
         </div>
         <div class="p-field p-col-12 p-md-4">
             <label for="rental-price">Rental price</label>
-            <InputNumber id="rental-price" v-model="request.rentalPrice" showButtons/>
+            <InputNumber id="rental-price" v-model="request.rentalPrice" showButtons :class="{'p-invalid': invalid.rentalPrice}"/>
+            <small id="rental-help" class="p-invalid" v-if="invalid.rentalPrice">{{invalid.rentalPrice}}</small>
         </div>
         <div class="p-field p-col-12 p-md-4">
-            <label for="sale-price">Sale price</label>changeTypes
-            <InputNumber id="sale-price" v-model="request.salePrice" showButtons/>
+            <label for="sale-price">Sale price</label>
+            <InputNumber id="sale-price" v-model="request.salePrice" showButtons :class="{'p-invalid' : invalid.salePrice}"/>
+            <small id="sale-help" class="p-invalid" v-if="invalid.salePrice">{{invalid.salePrice}}</small>
         </div>
         <div class="p-field p-col-12">
             <label for="image-url">Image URL</label>
             <div class="p-inputgroup">
-                <InputText id="image-url" v-model="imageUrl" :class="invalid.imageUrl? 'p-invalid' : ''"/>
-                <Button icon="pi pi-plus" title="Add URL" @click="addImageUrl"/>
+                <InputText id="image-url" v-model="imageUrl" :class="invalid.imageUrl || invalid.movieImages ? 'p-invalid' : ''"/>
+                <Button icon="pi pi-plus" title="Add URL" @click="addImageUrl" label="Add"/>
             </div>
-            <small id="username2-help" class="p-invalid" v-if="invalid.imageUrl">The image URL cannot be empty</small>
+            <small id="username2-help" class="p-invalid" v-if="invalid.imageUrl || invalid.movieImages">{{invalid.movieImages ? invalid.movieImages : 'The image URL is required'}}</small>
         </div>
         <div class="p-field p-col-12">
             <Carousel :value="request.movieImages" :numVisible="numVisible">
@@ -40,7 +45,7 @@
         </div>
     </div>
     <Button @click="save" class="p-mr-2">Save</Button>
-    <Button class="p-button-danger">Cancel</Button>
+    <Button class="p-button-danger" @click="cancel">Cancel</Button>
 </div>
 </template>
 
@@ -103,10 +108,16 @@ export default {
     },
     methods: {
         save() {
+            this.invalid = {};
             this.service.saveMovie(this.request).then(res => {
                 this.$toast.add({severity:'success', summary: 'Success', detail:"The movie was saved successfully", life: 3000});
-                console.log("res", res);
                 this.$emit('save-ok', res.id);
+            }).catch(error => {
+                if(error.response.status == 422) {
+                    error.response.data.messages.forEach(message => {
+                        this.invalid[message.field] = message.error.message;
+                    });
+                }
             });
         },
         addImageUrl() {
@@ -121,6 +132,9 @@ export default {
         },
         removeImg(url) {
             this.request.movieImages = this.request.movieImages.filter(img => img.url !== url)
+        },
+        cancel() {
+            this.$emit('cancelled', this.movie.id);
         }
     }
 }

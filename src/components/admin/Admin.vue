@@ -30,7 +30,18 @@ export default {
         }
     },
     created() {
-        this.$store.getters.services.adminService = new AdminService(this.$store.getters.auth);
+        let serv = new AdminService(this.$store.getters.auth);
+        serv.createAxios((error) => {
+            if(error.response.status == 401) {
+                this.$router.push('/login');
+            }
+            if(error.response.status == 422) {
+                return Promise.reject(error);    
+            }
+            this.$messages.showError(error.response.data.error.message, this);
+            return Promise.reject(error);
+        });
+        this.$store.getters.services.adminService = serv
     },
     computed: {
         changeLogVisible() {

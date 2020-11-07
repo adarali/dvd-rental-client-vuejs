@@ -140,7 +140,6 @@ export default {
             this.query();
         },
         formatDate(date) {
-            console.log(date);
             return new Date(date).toLocaleDateString('es-NI');
         }
     }

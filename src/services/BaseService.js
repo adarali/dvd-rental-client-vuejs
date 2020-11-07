@@ -40,7 +40,7 @@ export default class BaseService {
     }
 
     logout() {
-        console.log("logout auth", this.auth);
+        this.axios.get(this.baseUrl+'/auth/logout', {headers: this.headers});
         this.axios.headers = {};
     }
     

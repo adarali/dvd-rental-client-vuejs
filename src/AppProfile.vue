@@ -1,7 +1,7 @@
 <template>
 	<div class="layout-profile">
 		<div>
-			<img src="assets/layout/images/profile.png" alt="" />
+			<img src="assets/layout/images/no-profile-pic.jpg" alt="" style="width: 120px; height: 80px;"/>
 		</div>
 		<button class="p-link layout-profile-link" @click="onClick" v-if="auth.isLoggedIn">
 			<span class="username">{{auth.user.fullName}}</span>
@@ -49,7 +49,6 @@ import Button from 'primevue/button';
 				event.preventDefault();
 			},
 			login() {
-				console.log("log in clicked")
 				this.$router.push({path: '/login'});
 			},
 			logout() {

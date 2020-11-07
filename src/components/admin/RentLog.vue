@@ -43,10 +43,11 @@
             </Column>
             <Column field="actualReturnDate" :sortable="true">
             <template #header>
-                    <span title="Actual reutrn date">Actual <br> Return Date</span>
+                    <span title="Actual reutrn date">Actual <br>Return Date</span>
                 </template>
-                <template #body="slotProps">
-                    {{formatDate(slotProps.data.expectedReturnDate)}}
+                <template #body="row">
+                    <span v-if="row.data.actualReturnDate">{{formatDate(row.data.actualReturnDate)}}</span>
+                    <span v-else><Button label="Return" @click="returnRent(row.data)"></Button></span>
                 </template>
             </Column>
             <Column field="price" header="Price" :sortable="true">
@@ -164,7 +165,16 @@ export default {
             this.query();
         },
         formatDate(date) {
-            return date.toLocaleDateString('es-NI');
+            if(date) {
+                return date.toLocaleDateString('es-NI');
+            }
+            return "";
+        },
+        returnRent(log) {
+            console.log("renturn id", log.id)
+            this.service.returnRent(log.id).then(() => {
+                this.logs.find(l => l.id == log.id).actualReturnDate = new Date();
+            });
         }
     }
 }

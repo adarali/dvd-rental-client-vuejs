@@ -18,9 +18,9 @@ export default {
 				{
 					label: 'Admin', icon: 'pi pi-fw pi-sitemap', visible: false,
 					items: [
-						{label: 'Change Log', icon: 'pi pi-fw pi-id-card', to: '/admin/changelog'},
-						{label: 'Rent Log', icon: 'pi pi-fw pi-check-square', to: '/admin/rentlog'},
-                        {label: "Purchase Log", icon: "pi pi-fw pi-bookmark", to: "/admin/purchaselog"},
+						{label: 'Change Log', icon: 'pi pi-fw pi-pencil', to: '/admin/changelog'},
+						{label: 'Rent Log', icon: 'pi pi-fw pi-dollar', to: '/admin/rentlog'},
+                        {label: "Purchase Log", icon: "pi pi-fw pi-shopping-cart", to: "/admin/purchaselog"},
 					]
 				},
 				

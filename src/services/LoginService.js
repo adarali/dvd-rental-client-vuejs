@@ -9,7 +9,6 @@ export default class LoginService extends BaseService {
     }
     
     login(request) {
-        console.log("logging in")
         let url = this.baseUrl + '/auth'
         return this.axios.post(url, request)
         // .then(res => {
@@ -17,6 +16,11 @@ export default class LoginService extends BaseService {
         //         auth.jwt = res.data.jwt;
         //         auth.user = res.data.user;
         // });
+    }
+
+    logout(jwt) {
+        this.jwt = jwt;
+        return this.axios.get(this.baseUrl + "/auth/logout", {headers: this.headers})
     }
 
 }
