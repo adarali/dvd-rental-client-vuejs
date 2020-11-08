@@ -2,18 +2,17 @@
     <div>
         <Toolbar class="details-toolbar">
         <template #left>
-            <Button @click="cancel()" class="p-mr-2" label="Back" icon="pi pi-chevron-left"></Button>
-            <Button @click="rent" v-if="isLoggedIn" class="p-mr-2" label="Rent" icon="pi pi-dollar"></Button>
-            <Button @click="purchase" v-if="isLoggedIn" label="Purchase" icon="pi pi-shopping-cart"></Button>
-            <i class="pi pi-bars p-toolbar-separator p-mr-2" v-if="isLoggedIn" />
+            <Button @click="cancel()" class="p-mr-2" icon="pi pi-chevron-left" :label="backLabel" title="Back"></Button>
+            <Button @click="rent" v-if="isLoggedIn" class="p-mr-2" icon="pi pi-dollar" :label="rentLabel" title="Rent"></Button>
+            <Button @click="purchase" v-if="isLoggedIn" class="p-mr-2" icon="pi pi-shopping-cart" :label="purchaseLabel" title="Purchase"></Button>
             <ToggleButton class="p-mr-2" v-model="liked" :title="liked? 'Unlike' : 'Like'" onIcon="pi pi-thumbs-up" offIcon="pi pi-thumbs-up" :onLabel="likes" :offLabel="likes" @click="likeMovie" v-if="isLoggedIn"/>
-            <span class="pm-ml-2">{{likes == 0 ? 'No' : likes}} {{likes == 1 ? 'like' : 'likes'}}</span>
+            <span class="pm-ml-2">{{likeCount}}</span>
         </template>
 
-        <template #right v-if="isAdmin">
-            <ToggleButton icon="pi pi-check" onLabel="Available" offLabel="Unavailable" :title="movie.available ? 'Make unavailable' : 'Make available'" class="p-mr-2" v-model="movie.available" @change="toggleAvailable"/>
-            <Button icon="pi pi-pencil" class="p-button-success p-mr-2" title="Edit movie" @click="editMovie"/>
-            <Button icon="pi pi-trash" class="p-button-danger" title="Delete movie" @click="openConfirmation"/>
+        <template #right v-if="isAdmin" class="toolbar-right">
+            <ToggleButton icon="pi pi-check" onLabel="Available" offLabel="Unavailable" :title="movie.available ? 'Make unavailable' : 'Make available'" class="p-mr-2 toolbar-right" v-model="movie.available" @change="toggleAvailable"/>
+            <Button icon="pi pi-pencil" class="p-button-success p-mr-2 toolbar-right" title="Edit movie" @click="editMovie"/>
+            <Button icon="pi pi-trash" class="p-button-danger toolbar-right" title="Delete movie" @click="openConfirmation"/>
         </template>
         </Toolbar>
         <Dialog header="Confirmation" v-model:visible="displayConfirmation" :style="{width: '350px'}" :modal="true">
@@ -29,8 +28,8 @@
       
         <h3>{{movie.title}}</h3>
         <table>
-            <td style="width: 100px;"><span style="font-weight: bold; width: 100px;">Rent:</span> ${{movie.rentalPrice.toFixed(2)}}</td>
-            <td><span style="font-weight: bold; width: 100px;">Purchase</span>: ${{movie.salePrice.toFixed(2)}}</td>
+            <td style="width: 100px;"><span style="font-weight: bold; width: 100px;">Rent:</span><br>${{movie.rentalPrice.toFixed(2)}}</td>
+            <td><span style="font-weight: bold; width: 100px;">Purchase</span>:<br>${{movie.salePrice.toFixed(2)}}</td>
         </table>
         
       
@@ -92,6 +91,9 @@ export default {
             likes: 0,
             available: true,
             displayConfirmation: false,
+            windowWidth: window.innerWidth,
+            minWidth: 434,
+            
         }
     },
     mounted() {
@@ -100,6 +102,7 @@ export default {
             this.liked = data.liked;
             this.likes = data.likes;
         });
+        window.addEventListener('resize', this.onResize)
     },
     computed: {
         isLoggedIn() {
@@ -116,6 +119,28 @@ export default {
         },
         service() {
             return this.$store.getters.services.movieService;
+        },
+        backLabel() {
+            return this.windowWidth < this.minWidth ? null : 'Back';
+        },
+        rentLabel() {
+            return this.windowWidth < this.minWidth - 35 ? null : 'Rent';
+        },
+        purchaseLabel() {
+            return this.windowWidth < this.minWidth - 80 ? null : 'Purchase';
+        },
+        likeCount() {
+            if(this.windowWidth < 500) return '';
+            if(this.likes == 0) return 'No likes'
+            if(this.likes == 1) return '1 like';
+            return `${this.likes} likes`;
+            
+        },
+        toolbarRightClass() {
+            if(this.windowWidth < 400) {
+                return 'toolbar-right';
+            }
+            return null;
         }
     },
     methods: {
@@ -156,6 +181,9 @@ export default {
         closeConfirmation() {
             this.displayConfirmation = false;
         },
+        onResize() {
+            this.windowWidth = window.innerWidth;
+        }
     },
 }
 </script>
@@ -182,5 +210,18 @@ export default {
     position: sticky;
     top: 50px;
     z-index: 2000;
+}
+
+
+
+.p-toolbar-group-right {
+    margin-top: 5px !important;
+    display: none;
+}
+
+@media(max-width:664px) {
+    .toolbar-right {
+        margin-top: 5px !important;
+    }
 }
 </style>

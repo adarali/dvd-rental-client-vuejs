@@ -24,7 +24,7 @@ export default class BaseService {
 
     get baseUrl() {
         if(window.webpackHotUpdate) {
-            return "http://www.mylinuxpc.com";
+            return "http://192.168.1.5";
         }
         return "";
     }
