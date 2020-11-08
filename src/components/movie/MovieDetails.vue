@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Toolbar>
+        <Toolbar class="details-toolbar">
         <template #left>
             <Button @click="cancel()" class="p-mr-2" label="Back" icon="pi pi-chevron-left"></Button>
             <Button @click="rent" v-if="isLoggedIn" class="p-mr-2" label="Rent" icon="pi pi-dollar"></Button>
@@ -176,5 +176,11 @@ export default {
     max-width: 100%;
     height: auto;
     max-height: 500px;
+}
+
+.details-toolbar {
+    position: sticky;
+    top: 50px;
+    z-index: 2000;
 }
 </style>

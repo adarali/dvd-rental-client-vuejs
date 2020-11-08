@@ -41,9 +41,9 @@
             </div>
             <small id="username2-help" class="p-invalid" v-if="invalid.movieImages">{{invalid.movieImages}}</small>
         </div>
-        <div style="display: inline-block; margin-left: 5px;" v-for="image in request.movieImages" :key="image.url">
-            <a :href="image.url" target="_blank"><img :src="image.url" alt="" height="300"></a>
-            <Button icon="pi pi-times" title="Remove" @click="removeImg(image.url)"/>
+        <div style="display: inline-block; margin-left: 5px;" v-for="image in request.movieImages" :key="image.url" class="image-container">
+            <img :src="image.url" alt="" height="300">
+            <Button icon="pi pi-times" title="Remove" @click="removeImg(image.url)" class="btn-remove-image"/>
         </div>
     </div>
     
@@ -161,13 +161,36 @@ export default {
 }
 
 .image-container {
+    position: relative;
     display: inline-block;
     margin-right: 5px;
+    border: none;
+    border-width: 2px;
+    height: auto;
+    max-height: 300px;
 }
 
 .image-container img {
     max-width: 100%;
     height: auto;
     max-height: 300px;
+}
+
+.btn-remove-image {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    z-index: 100;
+    display: none;
+    border: none;
+}
+
+.image-container:hover .btn-remove-image {
+    display: block;
+}
+
+.btn-remove-image,.btn-remove-image:hover {
+    background-color: rgba(255, 255, 255, 0.5);
+    color: black;
 }
 </style>
