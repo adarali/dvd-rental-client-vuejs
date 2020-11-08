@@ -1,6 +1,6 @@
 export default class Auth {
     constructor(jwt = null, user = {}){
-        this.login(jwt, user);
+        this.login(jwt, user == null ? {} : user);
     }
 
     get isLoggedIn() {

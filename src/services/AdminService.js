@@ -18,7 +18,6 @@ export default class AdminService extends BaseService {
     }
 
     returnRent(id) {
-        console.log("return rent id", id);
         let url = this.baseUrl + "/rent/admin/return?id="+id
         return this.axios.get(url, {headers: this.headers});
     }

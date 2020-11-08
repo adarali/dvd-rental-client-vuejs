@@ -8,7 +8,7 @@
             </div>
             <div class="p-field">
                 <label for="lastname">Password</label>
-                <Password v-model="request.password"/>
+                <Password v-model="request.password" :feedback="false"/>
             </div>
         </div>
         <Button class="p-mr-2" @click="login()">Log in</Button>

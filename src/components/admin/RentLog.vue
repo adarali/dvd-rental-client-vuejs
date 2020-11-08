@@ -171,7 +171,6 @@ export default {
             return "";
         },
         returnRent(log) {
-            console.log("renturn id", log.id)
             this.service.returnRent(log.id).then(() => {
                 this.logs.find(l => l.id == log.id).actualReturnDate = new Date();
             });

@@ -27,6 +27,9 @@
                 </template>
               </Column>
           </div>
+          <template #footer>
+        In total there are {{ totalRecords }} movies.
+        </template>
           
       </DataTable>
   </div>

@@ -33,7 +33,10 @@
             <td><span style="font-weight: bold; width: 100px;">Purchase</span>: ${{movie.salePrice.toFixed(2)}}</td>
         </table>
         
-      <p>{{movie.description}}</p>
+      
+      <Panel header="Description">
+          {{movie.description}}
+      </Panel>
 
       <table>
           <div>
@@ -48,11 +51,11 @@
       </div>
 
       <div>
-        <Carousel :value="movie.movieImages" :numVisible="numVisible">
-            <template #item="slotProps">
-                <a :href="slotProps.data.url" target="_blank"><img :src="slotProps.data.url" alt="" width="100" height="100"></a>
-            </template>
-        </Carousel>
+        <div v-for="image in movie.movieImages" :key="image.url" class="image-container">
+            <a :href="image.url" target="_blank"><img :src="image.url" alt="" height="500"></a>
+        </div>
+        
+        
       </div>
       
       <div>
@@ -66,8 +69,8 @@
 import Button from 'primevue/button';
 import ToggleButton from 'primevue/togglebutton';
 import Toolbar from 'primevue/toolbar';
-import Carousel from 'primevue/carousel';
 import Dialog from 'primevue/dialog';
+import Panel from 'primevue/panel';
 
 export default {
    name:'MovieDetails',
@@ -75,7 +78,7 @@ export default {
         Button,
         ToggleButton,
         Toolbar,
-        Carousel,
+        Panel,
         Dialog,
     },
     props: {
@@ -96,7 +99,6 @@ export default {
             this.movie = data;
             this.liked = data.liked;
             this.likes = data.likes;
-            console.log("movie", this.movie.likes);
         });
     },
     computed: {
@@ -158,10 +160,21 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .confirmation-content {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.image-container {
+    display: inline-block;
+    margin-right: 5px;
+}
+
+.image-container img {
+    max-width: 100%;
+    height: auto;
+    max-height: 500px;
 }
 </style>

@@ -1,6 +1,12 @@
 <template>
 <div>
-    <h3>{{request.title}}</h3>
+    <Toolbar class="form-toolbar">
+        <template #left>
+            <Button @click="save" class="p-mr-2">Save</Button>
+            <Button class="p-button-danger" @click="cancel">Cancel</Button>
+        </template>    
+    </Toolbar>    
+    <h3>{{headerText}}</h3>
     <div class="p-fluid p-form-grid p-grid">
         <div class="p-field p-col-12">
             <label for="title">Title</label>
@@ -9,22 +15,22 @@
         </div>
         <div class="p-field p-col-12">
             <label for="description">Description</label>
-            <InputText id="description" v-model="request.description" :class="{'p-invalid': invalid.description}"></InputText>
+            <Textarea id="description" v-model="request.description" :class="{'p-invalid': invalid.description}"></Textarea>
             <small id="description-help" class="p-invalid" v-if="invalid.description">{{invalid.description}}</small>
         </div>
         <div class="p-field p-col-12 p-md-4">
             <label for="stock">Stock</label>
-            <InputNumber id="stock" v-model="request.stock" showButtons :class="{'p-invalid': invalid.stock}"/>
+            <InputNumber id="stock" v-model="request.stock" showButtons :class="{'p-invalid': invalid.stock}" :min="0"/>
             <small id="stock-help" class="p-invalid" v-if="invalid.stock">{{invalid.stock}}</small>
         </div>
         <div class="p-field p-col-12 p-md-4">
             <label for="rental-price">Rental price</label>
-            <InputNumber id="rental-price" v-model="request.rentalPrice" showButtons :class="{'p-invalid': invalid.rentalPrice}"/>
+            <InputNumber id="rental-price" v-model="request.rentalPrice" showButtons :class="{'p-invalid': invalid.rentalPrice}" :min="0" :minFractionDigits="2" :maxFractionDigits="2"/>
             <small id="rental-help" class="p-invalid" v-if="invalid.rentalPrice">{{invalid.rentalPrice}}</small>
         </div>
         <div class="p-field p-col-12 p-md-4">
             <label for="sale-price">Sale price</label>
-            <InputNumber id="sale-price" v-model="request.salePrice" showButtons :class="{'p-invalid' : invalid.salePrice}"/>
+            <InputNumber id="sale-price" v-model="request.salePrice" showButtons :class="{'p-invalid' : invalid.salePrice}" :min="0" :minFractionDigits="2"  :maxFractionDigits="2"/>
             <small id="sale-help" class="p-invalid" v-if="invalid.salePrice">{{invalid.salePrice}}</small>
         </div>
         <div class="p-field p-col-12">
@@ -33,19 +39,14 @@
                 <InputText id="image-url" v-model="imageUrl" :class="invalid.imageUrl || invalid.movieImages ? 'p-invalid' : ''"/>
                 <Button icon="pi pi-plus" title="Add URL" @click="addImageUrl" label="Add"/>
             </div>
-            <small id="username2-help" class="p-invalid" v-if="invalid.imageUrl || invalid.movieImages">{{invalid.movieImages ? invalid.movieImages : 'The image URL is required'}}</small>
+            <small id="username2-help" class="p-invalid" v-if="invalid.movieImages">{{invalid.movieImages}}</small>
         </div>
-        <div class="p-field p-col-12">
-            <Carousel :value="request.movieImages" :numVisible="numVisible">
-                <template #item="slotProps">
-                    <img :src="slotProps.data.url" alt="" width="100" height="100">
-                    <Button icon="pi pi-times" title="Remove" @click="removeImg(slotProps.data.url)"/>
-                </template>
-            </Carousel>
+        <div style="display: inline-block; margin-left: 5px;" v-for="image in request.movieImages" :key="image.url">
+            <a :href="image.url" target="_blank"><img :src="image.url" alt="" height="300"></a>
+            <Button icon="pi pi-times" title="Remove" @click="removeImg(image.url)"/>
         </div>
     </div>
-    <Button @click="save" class="p-mr-2">Save</Button>
-    <Button class="p-button-danger" @click="cancel">Cancel</Button>
+    
 </div>
 </template>
 
@@ -53,14 +54,16 @@
 import InputText from 'primevue/inputtext';
 import InputNumber from 'primevue/inputnumber';
 import Button from 'primevue/button';
-import Carousel from 'primevue/carousel';
+import Textarea from 'primevue/textarea';
+import Toolbar from 'primevue/toolbar';
 
 export default {
     components: {
         InputText,
         InputNumber,
         Button,
-        Carousel,
+        Textarea,
+        Toolbar,
     },
     props: {
         movie: Object,
@@ -104,33 +107,43 @@ export default {
         },
         service() {
             return this.$store.getters.services.movieService;
+        },
+        headerText() {
+            let text = this.movie.id ? 'Edit movie' : 'Add movie';
+            if(this.request.title) {
+                text += ` "${this.request.title.trim()}"`;
+            }
+            return text;
         }
     },
     methods: {
         save() {
-            this.invalid = {};
             this.service.saveMovie(this.request).then(res => {
                 this.$toast.add({severity:'success', summary: 'Success', detail:"The movie was saved successfully", life: 3000});
                 this.$emit('save-ok', res.id);
             }).catch(error => {
                 if(error.response.status == 422) {
+                    let invalid = {};
                     error.response.data.messages.forEach(message => {
-                        this.invalid[message.field] = message.error.message;
+                       invalid[message.field] = message.error.message;
                     });
+                    this.invalid = invalid;
                 }
             });
         },
         addImageUrl() {
             if(!this.imageUrl) {
-                return this.invalid.imageUrl = true;
+                return this.invalid.movieImages = "The image URL is required";
             }
             this.invalid.imageUrl = false;
             if(this.request.movieImages.filter(img => img.url == this.imageUrl).length < 1) {
                 this.request.movieImages.push({url: this.imageUrl});
             }
+            this.imageUrl = "";
         
         },
         removeImg(url) {
+            console.log("removing img", url)
             this.request.movieImages = this.request.movieImages.filter(img => img.url !== url)
         },
         cancel() {
@@ -140,6 +153,21 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+.form-toolbar {
+    position: sticky;
+    top: 50px;
+    z-index: 2000;
+}
 
+.image-container {
+    display: inline-block;
+    margin-right: 5px;
+}
+
+.image-container img {
+    max-width: 100%;
+    height: auto;
+    max-height: 300px;
+}
 </style>

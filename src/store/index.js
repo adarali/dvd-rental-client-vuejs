@@ -31,8 +31,6 @@ const store = new createStore({
             let service = new BaseService(state.auth);
             if(service) service.logout();
             state.auth.logout();
-            
-            
             state.menuKey++;
         }
     }
