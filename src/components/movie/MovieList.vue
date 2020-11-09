@@ -45,7 +45,7 @@
         </template>
 
         <template #footer>
-            This is a test!
+            Total movies: {{totalRecords}}
         </template>
     </DataView>
 </div>
@@ -215,6 +215,7 @@ export default {
 
     img {
         height: 150px;
+        width: 100px;
     }
 
     .product-list-detail, .product-list-action, img, .product-available {
