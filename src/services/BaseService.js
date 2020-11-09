@@ -4,7 +4,6 @@ export default class BaseService {
     
     constructor(auth) {
         this.auth = auth;
-        
         this.createAxios();
         
     }
@@ -14,7 +13,7 @@ export default class BaseService {
     }) {
         this.api = axios.create({
             baseURL: '',
-            timeout: 1000
+            timeout: 3000
           });
 
           this.api.interceptors.response.use((response) => response, onError);
