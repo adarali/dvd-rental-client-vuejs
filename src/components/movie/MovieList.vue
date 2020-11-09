@@ -3,33 +3,33 @@
     <DataView :value="movies" :layout="layout">
         <template #header>
             <div class="list-header-left p-grid">
-                <div class="sorter p-lg-5 p-col-12" style="text-align: left">
+                <div class="sorter p-lg-4 p-col-12" style="text-align: left">
                     <div class="p-inputgroup sort-inputgroup">
                         <Dropdown v-model="request.sortField" :options="sortOptions" optionLabel="label" optionValue="value" @change="onSort($event)"/>
                         <Button :icon="sortBtnIcon" @click="changeSortDirection"></Button>
                     </div>
                 </div>
                 
-                <div class="search-title p-lg-3 p-col-12">
+                <div class="search-title p-lg-4 p-col-12">
                     <InputText v-model="request.filters.title" placeholder="Search by title" @change="onSearch()" style="width: 100%"></InputText>
                 </div>
-                <div class="p-lg-2 p-col-12" v-if="isAdmin">
+                <div class="p-lg-4 p-col-12" v-if="isAdmin">
                     <Dropdown v-model="request.filters.available" :options="availableOptions" optionLabel="name" optionValue="code" @change="onSearch()" style="width: 100%;"></Dropdown>
                 </div>
                 <div class="paginator p-lg-2 p-col-12">
-                    <Button icon="pi pi-chevron-left" :disabled="request.page == 0" @click="onPrevPage" title="Previous page"></Button>
-                    <Button icon="pi pi-chevron-right" :disabled="request.page == pageCount" @click="onNextPage" title="Next page"></Button>
-                    <Dropdown v-model="request.pageSize" :options="pageSizeOptions" optionLabel="label" optionValue="value" @change="onPage({page: 0})"/>
+                    
                 </div>
-                
-                
+            </div>
+            <div style="text-align: center">
+                <Paginator :rows="request.pageSize" :totalRecords="totalRecords" :rowsPerPageOptions="[10,20,50, 100]" :first="firstItem"
+                template="PrevPageLink CurrentPageReport NextPageLink RowsPerPageDropdown" @page="onPage"></Paginator>
             </div>
         </template>
 
         <template #list="slotProps">
             <div class="p-col-12 list-items">
                 <div class="product-list-item" @click="showDetails(slotProps.data)">
-                    <img :src="slotProps.data.thumbnail" :alt="slotProps.data.title"/>
+                    <img :src="slotProps.data.thumbnail" :alt="slotProps.data.title" onerror="this.onerror=null;this.src='https://image.shutterstock.com/image-vector/vector-graphic-no-thumbnail-symbol-260nw-1391095985.jpg'"/>
                     <div class="product-list-detail">
                         <div class="product-name">{{(slotProps.data.title)}}</div>
                         <div class="product-likes">{{slotProps.data.likes}} Like(s)</div>
@@ -45,7 +45,10 @@
         </template>
 
         <template #footer>
-            Total movies: {{totalRecords}}
+            <div style="text-align: center">
+                <Paginator :rows="request.pageSize" :totalRecords="totalRecords" :rowsPerPageOptions="[10,20,50, 100]" :first="firstItem"
+                template="PrevPageLink CurrentPageReport NextPageLink RowsPerPageDropdown" @page="onPage"></Paginator>
+            </div>
         </template>
     </DataView>
 </div>
@@ -55,7 +58,7 @@
 // import MovieService from '@/services/MovieService.js';
 import DataView from 'primevue/dataview';
 import Dropdown from 'primevue/dropdown';
-// import Paginator from 'primevue/paginator';
+import Paginator from 'primevue/paginator';
 import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
 
@@ -64,7 +67,7 @@ export default {
     components: {
         DataView,
         Dropdown,
-        // Paginator,
+        Paginator,
         Button,
         InputText,
     },
@@ -129,7 +132,7 @@ export default {
     },
     methods: {
         loadMovies(request = this.request) {
-            this.service.getMovieList(request).then(res => {
+            return this.service.getMovieList(request).then(res => {
                 this.movies = res.data;
                 console.log("movies", this.movies);
                 this.totalRecords = res.totalRecords;
@@ -138,8 +141,12 @@ export default {
         onPage(e) {
             console.log("page e", e)
             this.request.page = e.page;
-            // this.request.pageSize = e.rows;
+            if(e.rows) {
+                this.request.pageSize = e.rows;
+            }
             this.loadMovies();
+            this.scrollToTop();
+            
         },
         onNextPage() {
            this.onPage({page: this.request.page + 1, rows: 10}) 
@@ -165,7 +172,7 @@ export default {
             this.$emit('add-clicked');
         },
         onSearch() {
-            this.onPage({page: 0});
+            this.onPage({page: 0, rows: this.request.pageSize});
         },
         changeSortDirection() {
             if(this.request.sortOrder == 1) {
@@ -173,7 +180,7 @@ export default {
             } else {
                 this.request.sortOrder = 1;
             }
-            this.loadMovies();
+            this.onPage({page: 0});
         },
         cutTitle(title) {
             let res = title.substring(0,50);
@@ -181,6 +188,12 @@ export default {
                 res += '...'
             }
             return res;
+        },
+        scrollToTop() {
+            window.scroll({
+                top: 0,
+                left: 0,
+            });
         }
     }
 
