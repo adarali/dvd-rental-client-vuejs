@@ -79,9 +79,9 @@ export default {
             selectedMovie: {},
             layout: 'list',
             availableOptions: [
-                {name: 'Available', code: 1},
-                {name: 'Unavailable', code: 0},
-                {name: 'All', code: 2},
+                {name: 'Show available only', code: 1},
+                {name: 'Show unavailable', code: 0},
+                {name: 'Show all', code: 2},
             ],
             request: {
               page: 0,
@@ -155,6 +155,11 @@ export default {
            this.onPage({page: this.request.page -1, rows: 10}) 
         },
         onSort() {
+            if(this.request.sortField == 'likes') {
+                this.request.sortOrder = 0;
+            } else {
+                this.request.sortOrder = 1;
+            }
             this.loadMovies();
         },
         onSelection() {
