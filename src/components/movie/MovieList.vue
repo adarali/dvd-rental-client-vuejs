@@ -90,7 +90,7 @@ export default {
               sortOrder: 1,
               filters: {
                 title: "",
-                available: 1,
+                available: 2,
               }
             },
             sortOptions: [

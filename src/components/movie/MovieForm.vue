@@ -41,12 +41,20 @@
             </div>
             <small id="username2-help" class="p-invalid" v-if="invalid.movieImages">{{invalid.movieImages}}</small>
         </div>
-        <div style="display: inline-block; margin-left: 5px;" v-for="image in request.movieImages" :key="image.url" class="image-container">
+        <!-- <div style="display: inline-block; margin-left: 5px;" v-for="image in request.movieImages" :key="image.url" class="image-container">
             <img :src="image.url" alt="" height="300">
             <Button icon="pi pi-times" title="Remove" @click="removeImg(image.url)" class="btn-remove-image"/>
-        </div>
+        </div> -->
     </div>
-    
+    <draggable class="dragArea list-group w-full" :list="request.movieImages">
+      <div
+        class="list-group-item bg-gray-300 m-1 p-3 rounded-md text-center image-container"
+        v-for="image in movie.movieImages"
+        :key="image.url">
+            <img :src="image.url" alt="" height="300">
+            <Button icon="pi pi-times" title="Remove" @click="removeImg(image.url)" class="btn-remove-image"/>
+      </div>
+    </draggable>
 </div>
 </template>
 
@@ -56,6 +64,7 @@ import InputNumber from 'primevue/inputnumber';
 import Button from 'primevue/button';
 import Textarea from 'primevue/textarea';
 import Toolbar from 'primevue/toolbar';
+import { VueDraggableNext } from 'vue-draggable-next';
 
 export default {
     components: {
@@ -64,6 +73,7 @@ export default {
         Button,
         Textarea,
         Toolbar,
+        draggable: VueDraggableNext,
     },
     props: {
         movie: Object,
@@ -143,8 +153,9 @@ export default {
         
         },
         removeImg(url) {
+            let images = this.request.movieImages
             console.log("removing img", url)
-            this.request.movieImages = this.request.movieImages.filter(img => img.url !== url)
+            images.splice(images.findIndex((item) => item.url == url), 1);
         },
         cancel() {
             this.$emit('cancelled', this.movie.id);
