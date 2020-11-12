@@ -209,7 +209,7 @@ export default {
 .details-toolbar {
     position: sticky;
     top: 50px;
-    z-index: 2000;
+    z-index: 600;
 }
 
 

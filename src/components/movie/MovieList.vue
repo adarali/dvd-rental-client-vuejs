@@ -21,8 +21,8 @@
                 </div>
             </div>
             <div style="text-align: center">
-                <Paginator :rows="request.pageSize" :totalRecords="totalRecords" :rowsPerPageOptions="[10,20,50, 100]" :first="firstItem"
-                template="PrevPageLink CurrentPageReport NextPageLink RowsPerPageDropdown" @page="onPage"></Paginator>
+                <Paginator class="movie-paginator" :rows="request.pageSize" :totalRecords="totalRecords" :rowsPerPageOptions="[10,20,50, 100]" :first="firstItem"
+                :template="paginatorTemplate" @page="onPage" :key="paginatorKey"></Paginator>
             </div>
         </template>
 
@@ -46,8 +46,8 @@
 
         <template #footer>
             <div style="text-align: center">
-                <Paginator :rows="request.pageSize" :totalRecords="totalRecords" :rowsPerPageOptions="[10,20,50, 100]" :first="firstItem"
-                template="PrevPageLink CurrentPageReport NextPageLink RowsPerPageDropdown" @page="onPage"></Paginator>
+                <Paginator class="movie-paginator" :rows="request.pageSize" :totalRecords="totalRecords" :rowsPerPageOptions="[10,20,50, 100]" :first="firstItem"
+                :template="paginatorTemplate" @page="onPage" :key="paginatorKey"></Paginator>
             </div>
         </template>
     </DataView>
@@ -78,6 +78,8 @@ export default {
             totalRecords: 0,
             selectedMovie: {},
             layout: 'list',
+            paginatorKey: 0,
+            windowWidth: 350,
             availableOptions: [
                 {name: 'Show available only', code: 1},
                 {name: 'Show unavailable', code: 0},
@@ -128,6 +130,13 @@ export default {
         },
         pageCount() {
             return Math.floor(this.totalRecords / this.request.pageSize)
+        },
+        paginatorTemplate() {
+            let template = "PrevPageLink CurrentPageReport NextPageLink";
+            if(window.innerWidth >= 350) {
+                return template + " RowsPerPageDropdown"
+            }
+            return template;
         }
     },
     methods: {
@@ -199,6 +208,14 @@ export default {
                 top: 0,
                 left: 0,
             });
+        },
+        onResize() {
+            let width = window.innerWidth;
+            if(this.windowWidth < 350 && width >= 350 || this.windowWidth >= 350 && width < 350) {
+                console.log("window resize");
+                console.log(++this.paginatorKey);
+                this.windowWidth = width;
+            }
         }
     }
 

@@ -56,7 +56,7 @@ export default {
                 this.$store.commit('incrementMenuKey');
 
                 this.cancel();    
-            });
+            }).catch((error) => this.$messages.showError(error.response.data.error.message, this));
         },
         cancel() {
             this.$router.back();

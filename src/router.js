@@ -4,22 +4,22 @@ const routes = [
     {
         path: '/',
         name: 'movie',
-        component: () => import('./components/movie/Movie.vue')
+        component: () => import(/* webpackChunkName: "movie" */'./components/movie/Movie.vue')
     },
     {
         path: '/movie',
         name: 'movie2',
-        component: () => import('./components/movie/Movie.vue')
+        component: () => import(/* webpackChunkName: "movie" */'./components/movie/Movie.vue')
     },
     {
         path: '/login',
         name: 'login',
-        component: () => import('./components/LoginForm.vue')
+        component: () => import(/* webpackChunkName: "login" */'./components/LoginForm.vue')
     },
     {
         path: '/admin/:view',
         name: 'view',
-        component: () => import('./components/admin/Admin.vue'),
+        component: () => import(/* webpackChunkName: "admin" */'./components/admin/Admin.vue'),
         props: true,
     }
 
