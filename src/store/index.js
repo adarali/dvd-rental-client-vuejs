@@ -9,7 +9,8 @@ const store = new createStore({
             auth: new Auth(localStorage.getItem('jwt'), JSON.parse(localStorage.getItem('user'))),
             services: {
 
-            }
+            },
+            pageTitle: 'Movies',
         }
         
     },
@@ -19,6 +20,7 @@ const store = new createStore({
         auth: state => state.auth,
         services: state => state.services,
         menuKey: state => state.menuKey,
+        pageTitle: state => state.pageTitle,
     },
     mutations: {
         setAuth(state, auth) {
@@ -32,6 +34,9 @@ const store = new createStore({
             if(service) service.logout();
             state.auth.logout();
             state.menuKey++;
+        },
+        pageTitle(state, title) {
+            state.pageTitle = title;
         }
     }
 });

@@ -2,13 +2,21 @@
 <div>
     <h3>Purchase Log</h3>
     <div class="p-fluid p-form-grid p-grid">
-        <div class="p-field p-col-6">
+        <div class="p-field p-col-12 p-sm-6">
             <label for="dateFrom">From</label>
             <Calendar v-model="request.dateFrom" dateFormat="dd/mm/yy" :yearNavigator="true" :monthNavigator="true" :yearRange="yearRange" @date-select="query"/>
         </div>
-        <div class="p-field p-col-6">
+        <div class="p-field p-col-12 p-sm-6">
             <label for="dateTo">To</label>
             <Calendar v-model="request.dateTo" dateFormat="dd/mm/yy" :yearNavigator="true" :monthNavigator="true" :yearRange="yearRange" @date-select="query"/>
+        </div>
+        <div class="p-field p-col-12 p-sm-6">
+            <label for="">Movie</label>
+            <Dropdown v-model="selectedMovie" :filter="!isMobile" :options="movieOptions" optionLabel="title" @change="onMovieChanged" style="width: 100%"></Dropdown>
+        </div>
+        <div class="p-field p-col-12 p-sm-6">
+            <label for="">User</label>
+            <Dropdown v-model="selectedUser" :filter="true" :options="userOptions" optionLabel="fullName" @change="onUserChanged" style="width: 100%"></Dropdown>
         </div>
     </div>
     <div>
@@ -17,24 +25,16 @@
     <div>
         <DataTable :value="logs" :paginator="true" :rows="pageSize"
         paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
-        :rowsPerPageOptions="[10,20,50]" :autoLayout="false">
-            <Column field="movie.title" header="Movie Title" :sortable="true">
-                <template #filter>
-                    <Dropdown v-model="selectedMovie" :filter="true" :options="movieOptions" optionLabel="title" @change="onMovieChanged" style="width: 100%"></Dropdown>
-                </template>
-            </Column>
-            <Column field="user.fullName" header="User" :sortable="true">
-                <template #filter>
-                    <Dropdown v-model="selectedUser" :filter="true" :options="userOptions" optionLabel="fullName" @change="onUserChanged" style="width: 100%"></Dropdown>
-                </template>
-            </Column>
-            <Column field="date" header="Purchase Date" :sortable="true" style="width: 100px;">
+        :rowsPerPageOptions="[10,20,50]" :autoLayout="false" :scrollable="true">
+            <Column field="movie.title" header="Movie Title" :sortable="true" :headerStyle="headerStyle"></Column>
+            <Column field="user.fullName" header="User" :sortable="true" :headerStyle="headerStyle"></Column>
+            <Column field="date" header="Purchase Date" :sortable="true" style="width: 100px;" :headerStyle="headerStyle">
                 <template #body="slotProps">
                     {{formatDate(slotProps.data.date)}}
                 </template>
             </Column>
-            <Column field="quantity" header="Quantity" :sortable="true"></Column>
-            <Column field="price" header="Price" :sortable="true">
+            <Column field="quantity" header="Quantity" :sortable="true" :headerStyle="headerStyle"></Column>
+            <Column field="price" header="Price" :sortable="true" :headerStyle="headerStyle">
                 <template #body="slotProps">
                     {{$filters.formatCurrency(slotProps.data.price)}}
                 </template>
@@ -77,6 +77,7 @@ export default {
             selectedUser: {},
             users: [],
             pageSize: 20,
+            headerStyle: 'width: 160px',
         }
     },
     computed: {
@@ -98,6 +99,9 @@ export default {
         },
         emptyUser() {
             return {username: null, fullName: "All"}
+        },
+        isMobile() {
+            return this.$utils.isMobile();
         }
     },
     mounted() {

@@ -22,10 +22,10 @@ export default class BaseService {
     }
 
     get baseUrl() {
-        if(window.webpackHotUpdate) {
+        if(process.env.NODE_ENV === 'development') {
             return "http://192.168.1.5";
         }
-        return "";
+        return "https://limitless-temple-47840.herokuapp.com";
     }
 
     get headers() {

@@ -45,6 +45,7 @@ export default {
         let auth = this.$store.getters.auth;
         services.movieService = new MovieService(auth);
         this.$store.getters.services.movieService = services.movieService;
+        this.$store.commit('pageTitle', 'Movies')
     },
     mounted() {
         let serv = services.movieService;

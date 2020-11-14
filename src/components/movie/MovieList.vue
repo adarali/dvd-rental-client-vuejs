@@ -10,11 +10,14 @@
                     </div>
                 </div>
                 
-                <div class="search-title p-lg-4 p-col-12">
+                <div class="search-title p-col-12" :class="{'p-lg-8': !isAdmin, 'p-lg-4':isAdmin}">
                     <InputText v-model="request.filters.title" placeholder="Search by title" @change="onSearch()" style="width: 100%"></InputText>
                 </div>
                 <div class="p-lg-4 p-col-12" v-if="isAdmin">
-                    <Dropdown v-model="request.filters.available" :options="availableOptions" optionLabel="name" optionValue="code" @change="onSearch()" style="width: 100%;"></Dropdown>
+                    <div class="p-inputgroup">
+                        <Dropdown v-model="request.filters.available" :options="availableOptions" optionLabel="name" optionValue="code" @change="onSearch()" style="width: 100%;"></Dropdown>
+                        <Button icon="pi pi-plus" title="Add movie" @click="addMovie"></Button>
+                    </div>
                 </div>
                 <div class="paginator p-lg-2 p-col-12">
                     
@@ -42,6 +45,10 @@
                     
                 </div>
             </div>
+        </template>
+
+        <template #empty>
+            Nothing to show.  
         </template>
 
         <template #footer>
@@ -96,8 +103,8 @@ export default {
               }
             },
             sortOptions: [
-                {label : 'Sort By Title', value: 'title'},
-                {label : 'Sort By Likes', value: 'likes'},
+                {label : 'Sort by title', value: 'title'},
+                {label : 'Sort by likes', value: 'likes'},
             ],
             pageSizeOptions: [
                 {label : '10', value: 10},

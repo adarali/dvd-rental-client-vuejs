@@ -63,3 +63,9 @@ app.config.globalProperties.$messages = {
         self.$toast.add({severity:'error', summary: 'Error', detail: msg, life: 3000});
     }
 }
+
+app.config.globalProperties.$utils = {
+    isMobile() {
+        return navigator.userAgent.includes('Mobile');
+    }
+}

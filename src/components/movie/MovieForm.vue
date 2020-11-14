@@ -46,13 +46,13 @@
             <Button icon="pi pi-times" title="Remove" @click="removeImg(image.url)" class="btn-remove-image"/>
         </div> -->
     </div>
-    <draggable class="dragArea list-group w-full" :list="request.movieImages">
+    <draggable class="dragArea list-group w-full" :list="request.movieImages" handle=".movie-image">
       <div
         class="list-group-item bg-gray-300 m-1 p-3 rounded-md text-center image-container"
-        v-for="image in movie.movieImages"
+        v-for="image in request.movieImages"
         :key="image.url">
-            <img :src="image.url" alt="" height="300">
             <Button icon="pi pi-times" title="Remove" @click="removeImg(image.url)" class="btn-remove-image"/>
+            <img :src="image.url" alt="" height="300" class="movie-image">
       </div>
     </draggable>
 </div>
@@ -99,9 +99,16 @@ export default {
             
         }
     },
-    mounted() {
+    created() {
         if(this.movie) {
             Object.assign(this.request, this.movie);
+            this.request.movieImages = []
+            if(this.movie.movieImages) {
+                this.movie.movieImages.forEach(img => this.request.movieImages.push(img));
+            }
+            
+            console.log("request images", this.request.movieImages)
+            console.log("movie images", this.movie.movieImages)
         }
     },
     computed: {
@@ -150,6 +157,7 @@ export default {
                 this.request.movieImages.push({url: this.imageUrl});
             }
             this.imageUrl = "";
+            console.log(this.request.movieImages)
         
         },
         removeImg(url) {
@@ -168,7 +176,7 @@ export default {
 .form-toolbar {
     position: sticky;
     top: 50px;
-    z-index: 2000;
+    z-index: 600;
 }
 
 .image-container {
@@ -191,7 +199,6 @@ export default {
     position: absolute;
     top: 0px;
     right: 0px;
-    z-index: 100;
     display: none;
     border: none;
 }

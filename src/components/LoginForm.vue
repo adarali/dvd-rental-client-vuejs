@@ -1,6 +1,5 @@
 <template>
   <div class="card">
-        <h3>Login Form</h3>
         <div class="p-fluid">
             <div class="p-field">
                 <label for="firstname">Username</label>
@@ -40,6 +39,9 @@ export default {
                 password: '',
             }
         }
+    },
+    created() {
+        this.$store.commit('pageTitle', "Login")
     },
     computed: {
         auth() {

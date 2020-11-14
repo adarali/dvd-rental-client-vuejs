@@ -1,39 +1,44 @@
 <template>
 <div>
-    <h3>Rent Log</h3>
     <div class="p-fluid p-form-grid p-grid">
-        <div class="p-field p-col-6">
+        <div class="p-field p-col-12 p-sm-6">
             <label for="dateFrom">From</label>
             <Calendar v-model="request.dateFrom" dateFormat="dd/mm/yy" :yearNavigator="true" :monthNavigator="true" :yearRange="yearRange" @date-select="query"/>
         </div>
-        <div class="p-field p-col-6">
+        <div class="p-field p-col-12 p-sm-6">
             <label for="dateTo">To</label>
             <Calendar v-model="request.dateTo" dateFormat="dd/mm/yy" :yearNavigator="true" :monthNavigator="true" :yearRange="yearRange" @date-select="query"/>
         </div>
+        <div class="p-field p-col-12 p-sm-6">
+            <label for="">Movie</label>
+            <Dropdown v-model="selectedMovie" :filter="!isMobile" :options="movieOptions" optionLabel="title" @change="onMovieChanged" style="width: 100%"></Dropdown>
+        </div>
+        <div class="p-field p-col-12 p-sm-6">
+            <label for="">User</label>
+            <Dropdown v-model="selectedUser" :filter="true" :options="userOptions" optionLabel="fullName" @change="onUserChanged" style="width: 100%"></Dropdown>
+        </div>
     </div>
     <div>
-        <Button @click="onQueryClicked">Query</Button>
+        
     </div>
     <div>
-        <DataTable :value="logs" :paginator="true" :rows="10"
+        <DataTable :value="logs" :paginator="true" :rows="10" :scrollable="true"
         paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
         :rowsPerPageOptions="[10,20,50]" :autoLayout="false">
-            <Column field="movie.title" header="Movie Title" :sortable="true">
-                <template #filter>
-                    <Dropdown v-model="selectedMovie" :filter="true" :options="movieOptions" optionLabel="title" @change="onMovieChanged" style="width: 100%"></Dropdown>
-                </template>
-            </Column>
-            <Column field="user.fullName" header="User" :sortable="true">
-                <template #filter>
-                    <Dropdown v-model="selectedUser" :filter="true" :options="userOptions" optionLabel="fullName" @change="onUserChanged" style="width: 100%"></Dropdown>
-                </template>
-            </Column>
-            <Column field="rentDate" header="Rent Date" :sortable="true" style="width: 100px;">
+            <template #header>
+                <div class="table-header">
+                    <h4>Rents</h4>
+                    <Button @click="onQueryClicked" icon="pi pi-refresh"></Button>
+                </div>
+            </template>
+            <Column field="movie.title" header="Movie Title" :sortable="true" :headerStyle="headerStyle"></Column>
+            <Column field="user.fullName" header="User" :sortable="true" :headerStyle="headerStyle"></Column>
+            <Column field="rentDate" header="Rent Date" :sortable="true" :headerStyle="headerStyle">
                 <template #body="slotProps">
                     {{formatDate(slotProps.data.rentDate)}}
                 </template>
             </Column>
-            <Column field="expectedReturnDate" :sortable="true" title="Expected Return Date">
+            <Column field="expectedReturnDate" :sortable="true" title="Expected Return Date" :headerStyle="headerStyle">
                 <template #header>
                     <span title="Expected reutrn date">Expected <br> Return Date</span>
                 </template>
@@ -41,7 +46,7 @@
                     {{formatDate(slotProps.data.expectedReturnDate)}}
                 </template>
             </Column>
-            <Column field="actualReturnDate" :sortable="true">
+            <Column field="actualReturnDate" :sortable="true" :headerStyle="headerStyle">
             <template #header>
                     <span title="Actual reutrn date">Actual <br>Return Date</span>
                 </template>
@@ -50,17 +55,17 @@
                     <span v-else><Button label="Return" @click="returnRent(row.data)"></Button></span>
                 </template>
             </Column>
-            <Column field="price" header="Price" :sortable="true">
+            <Column field="price" header="Price" :sortable="true" :headerStyle="headerStyle">
                 <template #body="slotProps">
                     {{$filters.formatCurrency(slotProps.data.price)}}
                 </template>
             </Column>
-            <Column field="penalty" header="Penalty" :sortable="true">
+            <Column field="penalty" header="Penalty" :sortable="true" :headerStyle="headerStyle">
                 <template #body="slotProps">
                     {{$filters.formatCurrency(slotProps.data.penalty)}}
                 </template>
             </Column>
-            <Column field="totalPrice" header="Total" :sortable="true">
+            <Column field="totalPrice" header="Total" :sortable="true" :headerStyle="headerStyle">
                 <template #body="slotProps">
                     {{$filters.formatCurrency(slotProps.data.totalPrice)}}
                 </template>
@@ -102,7 +107,11 @@ export default {
             movies: [],
             selectedUser: {},
             users: [],
+            headerStyle: 'width: 150px',
         }
+    },
+    created() {
+        this.$store.commit('pageTitle', 'Rent Log')
     },
     computed: {
         yearRange() {
@@ -123,6 +132,9 @@ export default {
         },
         emptyUser() {
             return {username: null, fullName: "All"}
+        },
+        isMobile() {
+            return this.$utils.isMobile();
         }
     },
     mounted() {
@@ -180,5 +192,9 @@ export default {
 </script>
 
 <style>
-
+.table-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
 </style>

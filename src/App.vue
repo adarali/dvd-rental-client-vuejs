@@ -35,6 +35,13 @@ export default {
     setup() {
         
     },
+    mounted() {
+        if(window.Android) {
+            window.addEventListener('load', () => {
+                window.Android.finishLoading();
+            })
+        }
+    },
     data() {
         return {
             user: {},
@@ -176,4 +183,9 @@ export default {
 
 <style lang="scss">
 @import './App.scss';
+@media(max-width: 1024px) {
+    .layout-main {
+        padding: 50px 0 0 0 !important;
+    }
+}
 </style>

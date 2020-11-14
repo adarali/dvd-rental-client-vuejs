@@ -1,43 +1,49 @@
 <template>
 <div>
-    <h3>Change Log</h3>
     <div class="p-fluid p-form-grid p-grid">
-        <div class="p-field p-col-6">
+        <div class="p-field p-col-12 p-sm-6">
             <label for="dateFrom">From</label>
             <Calendar v-model="request.dateFrom" dateFormat="dd/mm/yy" :yearNavigator="true" :monthNavigator="true" :yearRange="yearRange" @date-select="query"/>
         </div>
-        <div class="p-field p-col-6">
+        <div class="p-field p-col-12 p-sm-6">
             <label for="dateTo">To</label>
             <Calendar v-model="request.dateTo" dateFormat="dd/mm/yy" :yearNavigator="true" :monthNavigator="true" :yearRange="yearRange" @date-select="query"/>
         </div>
+        <div class="p-field p-col-12 p-sm-6">
+            <label>Movie</label>
+            <Dropdown v-model="selectedMovie" :filter="!isMobile" :options="movieOptions" optionLabel="title" @change="onMovieChanged" style="width: 100%"></Dropdown>
+        </div>
+        <div class="p-field p-col-12 p-sm-6">
+            <label for="">Change Type</label>
+            <Dropdown v-model="selectedChangeType" :options="changeTypeOptions" optionLabel="name" @change="onChangeTypeChanged" style="width: 100%"></Dropdown>
+        </div>
     </div>
-    <Button @click="onQueryClicked">Query</Button>
     <div style="margin-top: 10px;">
-        <DataTable :value="logs">
-            <Column field="movie.title" header="Movie Title" :sortable="true">
-                <template #filter>
-                    <Dropdown v-model="selectedMovie" :filter="true" :options="movieOptions" optionLabel="title" @change="onMovieChanged" style="width: 100%"></Dropdown>
-                </template>
-            </Column>
-            <Column field="date" header="Date" :sortable="true">
+        <DataTable :value="logs" :scrollable="true" scrollHeight="200px" :loading="loading" style="width: 100%;">
+            <template #header>
+                <div class="table-header">
+                    <h4>Changes</h4>
+                    <Button icon="pi pi-refresh" @click="onQueryClicked" title="Refresh"></Button>
+                </div>
+            </template>
+            <Column field="movie.title" header="Movie Title" :sortable="true" :headerStyle="headerStyle"></Column>
+            <Column field="date" header="Date" :sortable="true" :headerStyle="headerStyle">
                 <template #body="row">
                     {{row.data.dateFormatted}}
                 </template>
             </Column>
-            <Column field="oldValue" header="Old Value">
+            <Column field="oldValue" header="Old Value" :headerStyle="headerStyle">
                 <template #body="row">
                     {{row.data.changeType != 'TITLE' ? $filters.formatCurrency(parseFloat(row.data.oldValue)) : row.data.oldValue}}
                 </template>
             </Column>
-            <Column field="newValue" header="New Value">
+            <Column field="newValue" header="New Value" :headerStyle="headerStyle">
                 <template #body="row">
                     {{row.data.changeType !== 'TITLE' ? $filters.formatCurrency(parseFloat(row.data.newValue)) : row.data.newValue}}
                 </template>
             </Column>
-            <Column field="changeType" header="Change Type" :sortable="true">
-                <template #filter>
-                    <Dropdown v-model="selectedChangeType" :options="changeTypeOptions" optionLabel="name" @change="onChangeTypeChanged" style="width: 100%"></Dropdown>
-                </template>
+            <Column field="changeType" header="Change Type" :sortable="true" :headerStyle="headerStyle">
+                
             </Column>
         </DataTable>
     </div>
@@ -76,7 +82,8 @@ export default {
                     {changeType: 'TITLE', name: 'Title'},
                     {changeType: 'SALE_PRICE', name: 'Sale price'},
                     {changeType: 'RENTAL_PRICE', name: 'Rental price'},
-                ]
+                ],
+            headerStyle: 'width: 150px',
         }
     },
     computed: {
@@ -98,7 +105,13 @@ export default {
         },
         changeTypeOptions() {
             return [this.emptyChangeType].concat(this.changeTypes)
+        },
+        isMobile() {
+            return this.$utils.isMobile();
         }
+    },
+    created() {
+        this.$store.commit('pageTitle', 'Change Log')
     },
     mounted() {
         this.selectedMovie = this.emptyMovie;
@@ -130,12 +143,20 @@ export default {
         },
         onQueryClicked() {
             this.query();
+            if(window.Android) {
+                window.Android.showToast("Querying");
+            }
+            
         }
     },
 
 }
 </script>
 
-<style>
-
+<style scoped>
+.table-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
 </style>

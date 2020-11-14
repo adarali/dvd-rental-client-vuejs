@@ -6,7 +6,6 @@
             <Button @click="rent" v-if="isLoggedIn" class="p-mr-2" icon="pi pi-dollar" :label="rentLabel" title="Rent"></Button>
             <Button @click="purchase" v-if="isLoggedIn" class="p-mr-2" icon="pi pi-shopping-cart" :label="purchaseLabel" title="Purchase"></Button>
             <ToggleButton class="p-mr-2" v-model="liked" :title="liked? 'Unlike' : 'Like'" onIcon="pi pi-thumbs-up" offIcon="pi pi-thumbs-up" :onLabel="likes" :offLabel="likes" @click="likeMovie" v-if="isLoggedIn"/>
-            <span class="pm-ml-2">{{likeCount}}</span>
         </template>
 
         <template #right v-if="isAdmin" class="toolbar-right">
@@ -26,12 +25,14 @@
             </template>
         </Dialog>
       
-        <h3>{{movie.title}}</h3>
+        <div class="title-likes">
+            <div class="title">{{movie.title}}</div>
+            <span class="pm-ml-2">{{likeCount}}</span>
+        </div>
         <table>
             <td style="width: 100px;"><span style="font-weight: bold; width: 100px;">Rent:</span><br>${{movie.rentalPrice.toFixed(2)}}</td>
             <td><span style="font-weight: bold; width: 100px;">Purchase</span>:<br>${{movie.salePrice.toFixed(2)}}</td>
         </table>
-        
       
       <Panel header="Description">
           {{movie.description}}
@@ -130,7 +131,6 @@ export default {
             return this.windowWidth < this.minWidth - 80 ? null : 'Purchase';
         },
         likeCount() {
-            if(this.windowWidth < 500) return '';
             if(this.likes == 0) return 'No likes'
             if(this.likes == 1) return '1 like';
             return `${this.likes} likes`;
@@ -141,6 +141,9 @@ export default {
                 return 'toolbar-right';
             }
             return null;
+        },
+        isWebViewApp() {
+            return navigator.userAgent.endsWith('WebViewApp')
         }
     },
     methods: {
@@ -188,7 +191,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .confirmation-content {
     display: flex;
     align-items: center;
@@ -224,4 +227,16 @@ export default {
         margin-top: 5px !important;
     }
 }
+
+.title-likes {
+    margin-bottom: 10px;
+    .title {
+        font-size: 18pt;
+        font-weight: bold;
+    }
+     
+}
+
+
+
 </style>
