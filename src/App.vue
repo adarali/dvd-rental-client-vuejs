@@ -39,8 +39,9 @@ export default {
         if(window.Android) {
             window.addEventListener('load', () => {
                 window.Android.finishLoading();
-            })
+            });
         }
+        console.log("VUE_APP_BASE_URL", process.env.VUE_APP_BASE_URL)
     },
     data() {
         return {

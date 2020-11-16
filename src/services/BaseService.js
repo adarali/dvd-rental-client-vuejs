@@ -22,10 +22,7 @@ export default class BaseService {
     }
 
     get baseUrl() {
-        if(process.env.NODE_ENV === 'development') {
-            return "http://192.168.1.5";
-        }
-        return "https://limitless-temple-47840.herokuapp.com";
+        return process.env.VUE_APP_BASE_URL
     }
 
     get headers() {

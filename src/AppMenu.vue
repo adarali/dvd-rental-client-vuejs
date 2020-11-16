@@ -21,8 +21,10 @@ export default {
 						{label: 'Change Log', icon: 'pi pi-fw pi-pencil', to: '/admin/changelog'},
 						{label: 'Rent Log', icon: 'pi pi-fw pi-dollar', to: '/admin/rentlog'},
                         {label: "Purchase Log", icon: "pi pi-fw pi-shopping-cart", to: "/admin/purchaselog"},
+                        
 					]
 				},
+				{label: "API Docs", icon: "pi pi-fw pi-file", url: process.env.VUE_APP_BASE_URL+"/api-docs"},
 				
             ]
 		}
