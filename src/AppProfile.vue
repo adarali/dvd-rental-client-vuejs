@@ -1,7 +1,7 @@
 <template>
 	<div class="layout-profile">
 		<div>
-			<img src="assets/layout/images/no-profile-pic.jpg" alt="" style="width: 120px; height: 80px;"/>
+			<img :src="profilePic" alt="" style="width: 120px; height: 80px;"/>
 		</div>
 		<button class="p-link layout-profile-link" @click="onClick" v-if="auth.isLoggedIn">
 			<span class="username">{{auth.user.fullName}}</span>
@@ -39,6 +39,11 @@ import Button from 'primevue/button';
 			},
 			auth() {
 				return this.$store.getters.auth;
+			},
+			profilePic() {
+				if(this.isLoggedIn && this.auth.user.picture) return this.auth.user.picture;
+				return "assets/layout/images/no-profile-pic.jpg"
+				
 			}
 		},
 		methods: {

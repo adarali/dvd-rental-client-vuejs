@@ -150,8 +150,7 @@ export default {
         loadMovies(request = this.request) {
             return this.service.getMovieList(request).then(res => {
                 this.movies = res.data;
-                console.log("movies", this.movies);
-                this.totalRecords = res.totalRecords;
+                this.totalRecords = parseInt(res.headers['x-total-count']);
             });
         },
         onPage(e) {

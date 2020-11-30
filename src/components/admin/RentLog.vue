@@ -145,6 +145,7 @@ export default {
     methods: {
         query() {
             return this.service.getRentLog(this.request).then(res => {
+                console.log("rent res", res.data)
                 this.logs = res.data.map(l => new RentLog(l));
                 this.updateMovies();
                 this.updateUsers();
@@ -183,7 +184,7 @@ export default {
             return "";
         },
         returnRent(log) {
-            this.service.returnRent(log.id).then(() => {
+            this.service.returnRent(log).then(() => {
                 this.logs.find(l => l.id == log.id).actualReturnDate = new Date();
             });
         }

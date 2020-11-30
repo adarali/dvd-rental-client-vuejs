@@ -14,7 +14,8 @@ const routes = [
     {
         path: '/login',
         name: 'login',
-        component: () => import(/* webpackChunkName: "login" */'./components/LoginForm.vue')
+        component: () => import(/* webpackChunkName: "login" */'./components/LoginForm.vue'),
+        props: false,
     },
     {
         path: '/admin/:view',

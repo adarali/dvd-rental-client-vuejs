@@ -5,7 +5,7 @@
             <Button @click="cancel()" class="p-mr-2" icon="pi pi-chevron-left" :label="backLabel" title="Back"></Button>
             <Button @click="rent" v-if="isLoggedIn" class="p-mr-2" icon="pi pi-dollar" :label="rentLabel" title="Rent"></Button>
             <Button @click="purchase" v-if="isLoggedIn" class="p-mr-2" icon="pi pi-shopping-cart" :label="purchaseLabel" title="Purchase"></Button>
-            <ToggleButton class="p-mr-2" v-model="liked" :title="liked? 'Unlike' : 'Like'" onIcon="pi pi-thumbs-up" offIcon="pi pi-thumbs-up" :onLabel="likes" :offLabel="likes" @click="likeMovie" v-if="isLoggedIn"/>
+            <ToggleButton class="p-mr-2" v-model="liked" :title="liked? 'Unlike' : 'Like'" onIcon="pi pi-thumbs-up" offIcon="pi pi-thumbs-up" :onLabel="likes.toString()" :offLabel="likes.toString()" @click="likeMovie" v-if="isLoggedIn"/>
         </template>
 
         <template #right v-if="isAdmin" class="toolbar-right">

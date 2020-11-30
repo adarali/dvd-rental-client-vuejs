@@ -13,9 +13,10 @@ export default class BaseService {
     }) {
         this.api = axios.create({
             baseURL: '',
-            timeout: 3000
+            timeout: 3000,
+            withCredentials: true
           });
-
+        
           this.api.interceptors.response.use((response) => response, onError);
 
           return this;
@@ -27,7 +28,7 @@ export default class BaseService {
 
     get headers() {
         return {
-            'jwt': this.auth ? this.auth.jwt : ''
+            'Authorization': 'Bearer ' + (this.auth ? this.auth.jwt : '')
         }
     }
 
@@ -36,7 +37,7 @@ export default class BaseService {
     }
 
     logout() {
-        this.axios.get(this.baseUrl+'/auth/logout', {headers: this.headers});
+        // this.axios.get(this.baseUrl+'/auth/logout', {headers: this.headers});
         this.axios.headers = {};
     }
     

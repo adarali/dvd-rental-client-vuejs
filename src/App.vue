@@ -41,7 +41,10 @@ export default {
                 window.Android.finishLoading();
             });
         }
-        console.log("VUE_APP_BASE_URL", process.env.VUE_APP_BASE_URL)
+        let token = new URLSearchParams(window.location.search).get('token')
+        if(token) {
+            this.$router.push('/login')
+        }
     },
     data() {
         return {

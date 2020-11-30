@@ -119,6 +119,7 @@ export default {
         this.query();
     },
     methods: {
+        
         query() {
             return this.service.getChangeLog(this.request).then(res => {
                 this.logs = res.data.map(l => new ChangeLog(l));

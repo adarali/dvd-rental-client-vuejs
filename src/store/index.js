@@ -6,7 +6,7 @@ const store = new createStore({
     state() {
         return {
             menuKey: 0,
-            auth: new Auth(localStorage.getItem('jwt'), JSON.parse(localStorage.getItem('user'))),
+            auth: new Auth(localStorage.getItem('jwt'), JSON.parse(localStorage.getItem('user')?localStorage.getItem('user'): '{}')),
             services: {
 
             },
