@@ -14,7 +14,7 @@ export default class BaseService {
         this.api = axios.create({
             baseURL: '',
             timeout: 3000,
-            withCredentials: true
+            withCredentials: false
           });
         
           this.api.interceptors.response.use((response) => response, onError);

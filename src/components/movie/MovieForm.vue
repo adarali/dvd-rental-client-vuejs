@@ -141,7 +141,7 @@ export default {
             }).catch(error => {
                 if(error.response.status == 422) {
                     let invalid = {};
-                    error.response.data.messages.forEach(message => {
+                    error.response.data.forEach(message => {
                        invalid[message.field] = message.error.message;
                     });
                     this.invalid = invalid;

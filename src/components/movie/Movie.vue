@@ -50,13 +50,13 @@ export default {
     mounted() {
         let serv = services.movieService;
         serv.createAxios((error) => {
-            if(error.response.status == 401) {
+            if([401, 403].includes(error.response.status)) {
                 this.$router.push('/login');
             }
             if(error.response.status == 422) {
                 return Promise.reject(error);    
             }
-            this.$messages.showError(error.response.data.error.message, this);
+            this.$messages.showError(error.response.data.message, this);
             return Promise.reject(error);
         });
     },
