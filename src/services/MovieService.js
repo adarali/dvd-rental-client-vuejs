@@ -30,7 +30,7 @@ export default class MovieService extends BaseService {
     }
 
     deleteMovie(id) {
-        let url = this.baseUrl+"/movie/"+id;
+        let url = this.baseUrl+"/api/v1/movies/"+id;
         return this.axios.delete(url, {headers: this.headers}).then(res => res);
     }
 
